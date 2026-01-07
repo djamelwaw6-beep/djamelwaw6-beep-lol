@@ -1,0 +1,562 @@
+
+<div class="fixed inset-0 z-[-1]" 
+     [style.background-image]="settings().bgImage ? 'url(' + settings().bgImage + ')' : 'none'" 
+     [style.background-color]="settings().bgImage ? 'transparent' : settings().bgColor" 
+     style="background-size: cover; background-attachment: fixed; background-position: center;">
+</div>
+
+<div class="min-h-screen flex flex-col">
+  <!-- Header -->
+  <nav class="sticky top-0 z-40 backdrop-blur-xl bg-white/20 border-b border-white/10 shadow-sm px-4 sm:px-6 py-3 flex justify-between items-center">
+    <div class="flex items-center gap-4">
+      @if (settings().logo) {
+        <img [src]="settings().logo" alt="Store Logo" class="h-12 w-12 object-cover" [class]="'logo-effect-' + settings().logoEffect + ' logo-shape-' + settings().logoShape">
+      } @else {
+        <h1 class="text-2xl font-black tracking-tighter" [style.color]="'white'">{{ settings().storeName }}</h1>
+      }
+      @if (activeBotOffer() && settings().offerDisplayType === 'beside-logo') {
+        <div (click)="openOfferGridModal()" class="offer-banner">
+          <div class="offer-banner-content">
+            <i class="fa-solid fa-wand-magic-sparkles"></i>
+            <p class="font-bold text-sm whitespace-nowrap">افتح العرض قبل انتهاء الوقت!</p>
+          </div>
+        </div>
+      }
+    </div>
+    <div class="flex items-center gap-2">
+      <!-- Showcase Button -->
+      <button (click)="openShowcase()" title="اضغط لتصفح ورؤية جميع منتجات المتجر" class="relative cursor-pointer p-3 rounded-2xl bg-gradient-to-r from-purple-500 to-pink-500 hover:from-purple-600 hover:to-pink-600 text-white transition-all active:scale-90 shadow-lg border border-white/20">
+        <i class="fa-solid fa-play"></i>
+        <span class="hidden sm:inline ml-2 font-bold text-xs">عرض الكل</span>
+      </button>
+
+      @if (activeBotOffer() && settings().offerDisplayType === 'beside-cart') {
+        <div (click)="openOfferGridModal()" class="offer-banner">
+          <div class="offer-banner-content">
+            <i class="fa-solid fa-wand-magic-sparkles"></i>
+            <p class="font-bold text-sm whitespace-nowrap">افتح العرض قبل انتهاء الوقت!</p>
+          </div>
+        </div>
+      }
+      
+      @if(isAdminLoggedIn()) {
+        <a routerLink="/admin" title="لوحة التحكم" class="relative cursor-pointer p-3 rounded-2xl bg-white/10 hover:bg-white/30 transition-all active:scale-90">
+          <i class="fa-solid fa-wand-magic-sparkles text-2xl" style="color: white"></i>
+        </a>
+      }
+      
+      <div class="relative">
+        @if (!isAdminLoggedIn() && (showGreetingIcon() || showPostCheckoutIcon())) {
+          <a routerLink="/login" 
+            [title]="showPostCheckoutIcon() ? 'شكراً لطلبك! سجل حسابك لحفظ الطلبات' : 'تسجيل الدخول'" 
+            class="absolute -top-10 left-1/2 -translate-x-1/2 z-10"
+            [class.post-checkout-icon-anim]="showPostCheckoutIcon()"
+            [class.greet-icon]="showGreetingIcon() && !showPostCheckoutIcon()">
+            <span class="text-4xl" style="filter: drop-shadow(0 0 6px #fcd34d);">🛍️</span>
+          </a>
+        }
+        <div (click)="showCart.set(true)" title="سلة التسوق" class="relative cursor-pointer p-3 rounded-2xl bg-white/10 hover:bg-white/30 transition-all active:scale-90">
+          <i class="fa-solid fa-cart-shopping text-2xl"></i>
+          @if (cartCount() > 0) {
+            <span class="absolute -top-1 -right-1 bg-red-600 text-white text-[10px] w-6 h-6 flex items-center justify-center rounded-full font-black border-2 border-white animate-bounce">
+              {{ cartCount() }}
+            </span>
+          }
+        </div>
+      </div>
+
+    </div>
+  </nav>
+
+  @if (activeBotOffer() && settings().offerDisplayType === 'above-hero') {
+    <div class="py-4 px-4 sm:px-6">
+      <div (click)="openOfferGridModal()" class="offer-banner offer-banner-full-width">
+        <div class="offer-banner-content">
+          <i class="fa-solid fa-wand-magic-sparkles"></i>
+          <div>
+            <h4 class="font-bold">افتح العرض قبل انتهاء الوقت!</h4>
+            <p>خصم خاص لفترة محدودة بنسبة {{ activeBotOffer()?.discountPercentage }}% على المنتجات المختارة.</p>
+          </div>
+        </div>
+      </div>
+    </div>
+  }
+
+  <!-- Hero Section -->
+  <header class="pt-12 pb-24 md:pt-16 md:pb-32 px-4 text-center relative z-10">
+    <h2 class="text-4xl sm:text-5xl md:text-6xl font-black leading-tight mb-12"
+        [class]="'hero-animate-' + settings().heroAnimation"
+        [style.color]="settings().heroColor"
+        [style.font-family]="settings().heroFont"
+        [style.font-size]="settings().heroSize">
+      {{ settings().heroTitle }}
+    </h2>
+    <div class="flex justify-center gap-2 sm:gap-4 flex-wrap max-w-4xl mx-auto">
+      <button (click)="setFilter('all')" class="px-4 sm:px-6 py-3 rounded-2xl font-black backdrop-blur-xl transition-all border border-white/10 uppercase tracking-widest text-xs" [class.bg-white]="activeFilter() === 'all'" [class.text-black]="activeFilter() === 'all'" [class.bg-black/40]="activeFilter() !== 'all'" [class.text-white]="activeFilter() !== 'all'">
+        الكل
+      </button>
+      @for (category of categories(); track category) {
+        <button (click)="setFilter(category)" class="px-4 sm:px-6 py-3 rounded-2xl font-black backdrop-blur-xl transition-all border border-white/10 uppercase tracking-widest text-xs" [class.bg-white]="activeFilter() === category" [class.text-black]="activeFilter() === category" [class.bg-black/40]="activeFilter() !== category" [class.text-white]="activeFilter() !== category">
+          {{ category }}
+        </button>
+      }
+    </div>
+  </header>
+
+  <!-- Product Grid -->
+  <main class="container mx-auto px-4 sm:px-6 pb-24 relative flex-grow">
+    <div class="space-y-16">
+      @for (layoutItem of renderedLayout(); track layoutItem) {
+        <div>
+          @if (layoutItem.isSection) {
+            <div class="grid gap-x-4 sm:gap-x-6 gap-y-10" [class]="'grid-cols-2 md:grid-cols-' + layoutItem.section.columns">
+              <h2 class="col-span-full text-3xl font-black text-white mb-2">{{ layoutItem.section.name }}</h2>
+              @for (product of layoutItem.products; track product.id; let i = $index) {
+                <div class="flex flex-col group">
+                  <div (click)="openProductModal(product)"
+                       (mousemove)="onCardMouseMove($event, i, layoutItem.section.cardAnimation)"
+                       (mouseleave)="onCardMouseLeave($event)"
+                      [class]="'product-card ' + getCardAnimationClass(i, layoutItem.section.cardAnimation) + ' card-shape-' + layoutItem.section.cardShape"
+                      [style.background-color]="settings().cardBgColor"
+                      [style.box-shadow]="settings().cardShadow"
+                      [style.animation-duration]="layoutItem.section.cardAnimation === 'grid-wave' ? settings().cardAnimationSpeed + 's' : null"
+                      [style.animation-delay]="['staggered-pop'].includes(layoutItem.section.cardAnimation) ? (i * 0.07) + 's' : null"
+                      [style.--card-image]="'url(' + product.image + ')'">
+                    <img [src]="product.image" [alt]="product.name" width="400" height="400" class="w-full h-full object-cover transition-transform duration-500 group-hover:scale-110" referrerpolicy="no-referrer">
+                    @if(discountedPriceMap().has(product.id)) {
+                      <div class="absolute top-4 left-4 px-2 py-1 bg-yellow-300 text-yellow-800 text-xs font-bold rounded-full shadow-lg z-10 flex items-center gap-1">
+                        <i class="fa-solid fa-star"></i> -{{ activeBotOffer()?.discountPercentage }}%
+                      </div>
+                    }
+                  </div>
+                  @if (settings().cardShowTitle || settings().cardShowPrice) {
+                    <div class="pt-3 text-center">
+                      @if (settings().cardShowTitle) {
+                        <h3 class="font-bold text-white truncate transition-colors group-hover:text-sky-300">{{ product.name }}</h3>
+                      }
+                      @if (settings().cardShowPrice) {
+                        <div class="mt-1">
+                          @if(discountedPriceMap().has(product.id)) {
+                            <span class="text-sm font-normal text-red-400/80 line-through">{{ product.price.toLocaleString() }} د.ج</span>
+                            <span class="ml-2 text-lg font-bold text-white">{{ discountedPriceMap().get(product.id)?.toLocaleString('ar-DZ', { minimumFractionDigits: 0, maximumFractionDigits: 0 }) }} <small class="text-xs">د.ج</small></span>
+                          } @else {
+                            <span class="text-lg font-bold text-white">{{ product.price.toLocaleString() }} <small class="text-xs">د.ج</small></span>
+                          }
+                        </div>
+                      }
+                    </div>
+                  }
+                </div>
+              }
+            </div>
+          } @else {
+            <div class="grid gap-x-4 sm:gap-x-6 gap-y-10" [class]="'grid-cols-2 md:grid-cols-' + layoutItem.settings.columns">
+              @for (product of layoutItem.products; track product.id; let i = $index) {
+                <div class="flex flex-col group">
+                  <div (click)="openProductModal(product)"
+                       (mousemove)="onCardMouseMove($event, i, layoutItem.settings.cardAnimation)"
+                       (mouseleave)="onCardMouseLeave($event)"
+                      [class]="'product-card ' + getCardAnimationClass(i, layoutItem.settings.cardAnimation) + ' card-shape-' + layoutItem.settings.cardShape"
+                      [style.background-color]="settings().cardBgColor"
+                      [style.box-shadow]="settings().cardShadow"
+                      [style.animation-duration]="layoutItem.settings.cardAnimation === 'grid-wave' ? settings().cardAnimationSpeed + 's' : null"
+                      [style.animation-delay]="['staggered-pop'].includes(layoutItem.settings.cardAnimation) ? (i * 0.07) + 's' : null"
+                      [style.--card-image]="'url(' + product.image + ')'">
+                    <img [src]="product.image" [alt]="product.name" width="400" height="400" class="w-full h-full object-cover transition-transform duration-500 group-hover:scale-110" referrerpolicy="no-referrer">
+                    @if(discountedPriceMap().has(product.id)) {
+                      <div class="absolute top-4 left-4 px-2 py-1 bg-yellow-300 text-yellow-800 text-xs font-bold rounded-full shadow-lg z-10 flex items-center gap-1">
+                        <i class="fa-solid fa-star"></i> -{{ activeBotOffer()?.discountPercentage }}%
+                      </div>
+                    }
+                  </div>
+                   @if (settings().cardShowTitle || settings().cardShowPrice) {
+                    <div class="pt-3 text-center">
+                      @if (settings().cardShowTitle) {
+                        <h3 class="font-bold text-white truncate transition-colors group-hover:text-sky-300">{{ product.name }}</h3>
+                      }
+                      @if (settings().cardShowPrice) {
+                        <div class="mt-1">
+                          @if(discountedPriceMap().has(product.id)) {
+                            <span class="text-sm font-normal text-red-400/80 line-through">{{ product.price.toLocaleString() }} د.ج</span>
+                            <span class="ml-2 text-lg font-bold text-white">{{ discountedPriceMap().get(product.id)?.toLocaleString('ar-DZ', { minimumFractionDigits: 0, maximumFractionDigits: 0 }) }} <small class="text-xs">د.ج</small></span>
+                          } @else {
+                            <span class="text-lg font-bold text-white">{{ product.price.toLocaleString() }} <small class="text-xs">د.ج</small></span>
+                          }
+                        </div>
+                      }
+                    </div>
+                  }
+                </div>
+              }
+            </div>
+          }
+        </div>
+      }
+    </div>
+  </main>
+
+  <!-- Footer -->
+  <footer class="text-white py-12 px-4 sm:px-6 border-t border-white/10 mt-auto bg-black/40 backdrop-blur-md">
+    <div class="container mx-auto grid grid-cols-1 md:grid-cols-3 gap-8 text-center md:text-right">
+        <!-- About Section -->
+        <div class="space-y-4">
+            <h3 class="text-2xl font-black">{{ settings().storeName }}</h3>
+            <p class="text-slate-300 text-sm leading-relaxed max-w-sm mx-auto md:mx-0">
+                {{ settings().footer.aboutText }}
+            </p>
+            <p class="text-slate-400 text-xs mt-4">© {{ currentYear }} جميع الحقوق محفوظة.</p>
+        </div>
+
+        <!-- Quick Links -->
+        <div class="space-y-4">
+            <h4 class="font-bold text-lg text-slate-200">روابط سريعة</h4>
+            <nav class="flex flex-col space-y-2 text-slate-300 items-center md:items-start">
+                @for(link of settings().footer.quickLinks; track link.label) {
+                    @if(link.label && link.url) {
+                        <a [href]="link.url" class="hover:text-white transition flex items-center gap-2">
+                            <i class="fa-solid fa-chevron-left text-xs"></i>
+                            {{ link.label }}
+                        </a>
+                    }
+                }
+            </nav>
+        </div>
+
+        <!-- Contact & Social -->
+        <div class="space-y-4">
+            <h4 class="font-bold text-lg text-slate-200">تواصل معنا</h4>
+            
+            @if(settings().footer.contactEmail) {
+                <a [href]="'mailto:' + settings().footer.contactEmail" class="block text-slate-300 hover:text-white transition text-sm">
+                    <i class="fa-solid fa-envelope ml-2"></i>
+                    {{ settings().footer.contactEmail }}
+                </a>
+            }
+
+            <div class="flex justify-center md:justify-end gap-4 text-2xl pt-2">
+                @if(settings().footer.socialLinks.facebook) {
+                    <a [href]="settings().footer.socialLinks.facebook" target="_blank" rel="noopener noreferrer" class="text-slate-400 hover:text-blue-500 transition" title="Facebook"><i class="fab fa-facebook-f"></i></a>
+                }
+                @if(settings().footer.socialLinks.twitter) {
+                    <a [href]="settings().footer.socialLinks.twitter" target="_blank" rel="noopener noreferrer" class="text-slate-400 hover:text-sky-400 transition" title="Twitter / X"><i class="fab fa-twitter"></i></a>
+                }
+                @if(settings().footer.socialLinks.instagram) {
+                    <a [href]="settings().footer.socialLinks.instagram" target="_blank" rel="noopener noreferrer" class="text-slate-400 hover:text-pink-500 transition" title="Instagram"><i class="fab fa-instagram"></i></a>
+                }
+                @if(settings().footer.socialLinks.telegram) {
+                    <a [href]="settings().footer.socialLinks.telegram" target="_blank" rel="noopener noreferrer" class="text-slate-400 hover:text-sky-500 transition" title="Telegram"><i class="fab fa-telegram"></i></a>
+                }
+                @if(settings().footer.socialLinks.tiktok) {
+                    <a [href]="settings().footer.socialLinks.tiktok" target="_blank" rel="noopener noreferrer" class="text-slate-400 hover:text-white transition" title="TikTok"><i class="fab fa-tiktok"></i></a>
+                }
+                @if(settings().footer.socialLinks.youtube) {
+                    <a [href]="settings().footer.socialLinks.youtube" target="_blank" rel="noopener noreferrer" class="text-slate-400 hover:text-red-500 transition" title="YouTube"><i class="fab fa-youtube"></i></a>
+                }
+            </div>
+        </div>
+    </div>
+  </footer>
+
+</div>
+
+<!-- Product Modal -->
+@if (selectedProduct(); as product) {
+  <div (click)="closeProductModal()" class="fixed inset-0 z-[120] bg-black/80 backdrop-blur-lg flex justify-center items-center p-4 animate-fade-in">
+    <div (click)="$event.stopPropagation()" class="bg-white dark:bg-slate-800 w-full max-w-2xl rounded-3xl overflow-hidden shadow-2xl relative animate-scale-up">
+      <button (click)="closeProductModal()" title="إغلاق" class="absolute top-4 right-4 bg-slate-100 dark:bg-slate-700 w-12 h-12 rounded-2xl flex items-center justify-center z-10 hover:bg-slate-200 dark:hover:bg-slate-600 transition text-slate-800 dark:text-slate-200">
+        <i class="fa-solid fa-xmark text-xl"></i>
+      </button>
+      <div class="flex flex-col md:flex-row">
+        <div class="md:w-1/2 h-64 md:h-auto relative bg-slate-200 dark:bg-slate-700">
+          <img [src]="selectedVariant()?.image || product.image" [alt]="product.name" width="400" height="400" class="w-full h-full object-cover" referrerpolicy="no-referrer">
+        </div>
+        <div class="md:w-1/2 p-8 flex flex-col">
+          <span class="bg-blue-100 text-blue-600 px-3 py-1 rounded-full text-xs font-bold uppercase self-start mb-4">{{ product.category }}</span>
+          <h2 class="text-3xl font-black mb-2 text-slate-900 dark:text-white">{{ product.name }}</h2>
+          <p class="text-slate-600 dark:text-slate-300 mb-6 max-h-36 overflow-y-auto pr-2">{{ product.description }}</p>
+
+          @if (product.variants && product.variants.length > 0) {
+            <div class="mb-4">
+                <h4 class="font-bold text-sm mb-2 text-slate-800 dark:text-slate-200">الألوان:</h4>
+                <div class="flex gap-2">
+                    @for (variant of product.variants; track variant.color) {
+                       <div (click)="selectVariant(variant)" class="w-8 h-8 rounded-full border-2 cursor-pointer transition" 
+                            [style.background]="variant.color"
+                            [class.ring-2]="selectedVariant()?.color === variant.color"
+                            [class.ring-blue-500]="selectedVariant()?.color === variant.color"
+                            [class.ring-offset-2]="selectedVariant()?.color === variant.color"
+                            [class.border-slate-200]="selectedVariant()?.color !== variant.color"
+                            [class.dark:border-slate-600]="selectedVariant()?.color !== variant.color"
+                            [class.dark:ring-offset-slate-800]="selectedVariant()?.color === variant.color">
+                       </div>
+                    }
+                </div>
+            </div>
+          }
+          
+          @if (discountedPriceMap().has(product.id)) {
+            <div class="mb-6">
+                <span class="text-2xl font-bold text-red-500 line-through">{{ product.price.toLocaleString() }} د.ج</span>
+                <div class="text-4xl font-black text-blue-600 mt-1">
+                    {{ discountedPriceMap().get(product.id)?.toLocaleString('ar-DZ', { minimumFractionDigits: 0, maximumFractionDigits: 0 }) }} <small class="text-sm">د.ج</small>
+                    <span class="ml-4 px-3 py-1 bg-yellow-300 text-yellow-800 text-base font-bold rounded-full align-middle">
+                        توفير {{ activeBotOffer()?.discountPercentage }}%
+                    </span>
+                </div>
+            </div>
+          } @else {
+            <div class="text-3xl font-black text-blue-600 mb-6">{{ product.price.toLocaleString() }} <small class="text-sm">د.ج</small></div>
+          }
+
+          <div class="flex gap-2">
+            <button (click)="addToCartFromModal(product, $event)" class="flex-1 bg-slate-900 text-white py-4 rounded-2xl font-black text-lg hover:bg-blue-600 transition dark:bg-blue-600 dark:hover:bg-blue-700">
+              <i class="fa-solid fa-cart-plus mr-2"></i> إضافة للسلة
+            </button>
+            <div class="relative">
+              <button (click)="toggleShare($event)" title="مشاركة المنتج" class="w-16 bg-slate-200 text-slate-800 py-4 rounded-2xl font-black text-lg hover:bg-slate-300 transition dark:bg-slate-700 dark:text-slate-200 dark:hover:bg-slate-600">
+                <i class="fa-solid fa-share-alt"></i>
+              </button>
+              @if (showShareOptions()) {
+                <div (click)="$event.stopPropagation()" class="absolute bottom-full right-0 mb-2 w-48 bg-white dark:bg-slate-700 rounded-xl shadow-2xl border dark:border-slate-600 p-2 z-20 animate-fade-in-up-sm text-slate-800 dark:text-slate-200 font-sans">
+                    <button (click)="shareTo('facebook', product)" class="w-full text-right flex items-center gap-3 px-3 py-2 rounded-lg hover:bg-slate-100 dark:hover:bg-slate-600 transition">
+                        <i class="fab fa-facebook-f w-5 text-blue-600"></i>
+                        <span>فيسبوك</span>
+                    </button>
+                    <button (click)="shareTo('telegram', product)" class="w-full text-right flex items-center gap-3 px-3 py-2 rounded-lg hover:bg-slate-100 dark:hover:bg-slate-600 transition">
+                        <i class="fab fa-telegram w-5 text-sky-500"></i>
+                        <span>تلغرام</span>
+                    </button>
+                    <button (click)="copyLink()" class="w-full text-right flex items-center gap-3 px-3 py-2 rounded-lg hover:bg-slate-100 dark:hover:bg-slate-600 transition">
+                      @if (isLinkCopied()) {
+                          <i class="fa-solid fa-check w-5 text-green-500"></i>
+                          <span class="text-green-500">تم النسخ!</span>
+                      } @else {
+                          <i class="fa-solid fa-link w-5 text-slate-500 dark:text-slate-400"></i>
+                          <span>نسخ الرابط</span>
+                      }
+                    </button>
+                    @if (canShareNatively) {
+                      <div class="border-t my-1 dark:border-slate-600"></div>
+                      <button (click)="nativeShare(product)" class="w-full text-right flex items-center gap-3 px-3 py-2 rounded-lg hover:bg-slate-100 dark:hover:bg-slate-600 transition">
+                          <i class="fa-solid fa-ellipsis-h w-5 text-slate-500 dark:text-slate-400"></i>
+                          <span>المزيد...</span>
+                      </button>
+                    }
+                </div>
+              }
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+}
+
+<!-- Cart Sidebar -->
+@if (showCart()) {
+  <div (click)="showCart.set(false)" class="fixed inset-0 z-[120] bg-black/70 backdrop-blur-sm"></div>
+  <div (click)="$event.stopPropagation()" class="fixed top-0 right-0 z-[130] bg-white/20 backdrop-blur-2xl border-l border-white/10 w-full max-w-md h-full shadow-2xl flex flex-col animate-slide-in-right p-6">
+    <div class="flex justify-between items-center mb-6 pb-4 border-b border-white/20">
+      <div class="flex items-center gap-4">
+          <button routerLink="/store" title="العودة للمتجر" (click)="showCart.set(false)" class="text-white w-10 h-10 rounded-xl bg-white/10 hover:bg-white/20 flex items-center justify-center transition">
+            <i class="fa-solid fa-arrow-right"></i>
+          </button>
+          <h2 class="text-2xl font-black text-white">سلة التسوق</h2>
+      </div>
+      <button (click)="showCart.set(false)" title="إغلاق" class="bg-white/10 text-white w-10 h-10 rounded-xl flex items-center justify-center hover:bg-white/20 transition">
+        <i class="fa-solid fa-xmark"></i>
+      </button>
+    </div>
+    @if (cart().length === 0) {
+      <div class="flex-1 flex flex-col items-center justify-center text-slate-300">
+        <i class="fa-solid fa-shopping-basket text-7xl mb-4"></i>
+        <p class="font-bold">سلتك فارغة</p>
+      </div>
+    } @else {
+      <div class="flex-1 overflow-y-auto -mr-2 pr-2 space-y-4">
+        @for (item of cart(); track item.cartId) {
+          <div class="flex items-center gap-4 bg-white/20 p-3 rounded-2xl shadow-sm border border-white/10">
+            <div class="w-20 h-20 rounded-xl bg-white/10 flex-shrink-0">
+              <img [src]="item.image" [alt]="item.name" width="80" height="80" class="w-20 h-20 rounded-xl object-cover" referrerpolicy="no-referrer">
+            </div>
+            <div class="flex-1 min-w-0">
+              <h4 class="font-bold text-md text-white truncate">{{ item.name }}</h4>
+              @if(item.selectedVariant) {
+                <div class="flex items-center gap-2 mt-1">
+                  <div class="w-4 h-4 rounded-full border border-white/50" [style.backgroundColor]="item.selectedVariant.color"></div>
+                  <span class="text-xs text-slate-300">اللون المختار</span>
+                </div>
+              }
+              <p class="font-black text-sky-300 mt-1">{{ item.price.toLocaleString() }} د.ج (x{{ item.quantity }})</p>
+            </div>
+            <button (click)="cartService.removeFromCart(item.cartId)" class="text-red-400 w-10 h-10 rounded-xl hover:bg-red-500/20 flex items-center justify-center transition flex-shrink-0">
+              <i class="fa-solid fa-trash"></i>
+            </button>
+          </div>
+        }
+      </div>
+      <div class="pt-6 border-t border-white/20 mt-4">
+        <button (click)="goToCheckout()" class="w-full bg-green-500 text-white py-4 rounded-2xl font-black text-lg hover:bg-green-600 transition shadow-lg">
+          إتمام الطلب ({{ cartTotal().toLocaleString() }} د.ج)
+        </button>
+      </div>
+    }
+  </div>
+}
+
+<!-- Offer Grid Modal -->
+@if (isOfferGridModalOpen() && activeBotOffer(); as offer) {
+  <div class="fixed inset-0 z-[110] bg-black/80 backdrop-blur-lg flex items-center justify-center p-4 animate-fade-in" (click)="closeOfferGridModal()">
+    <div class="w-full max-w-4xl max-h-[90vh] bg-slate-800/90 backdrop-blur-2xl border border-pink-500/50 rounded-3xl shadow-2xl flex flex-col animate-scale-up" (click)="$event.stopPropagation()">
+      <header class="p-6 flex justify-between items-center border-b border-white/10 flex-shrink-0">
+        <div class="text-white">
+          <h2 class="text-2xl font-black text-pink-400 drop-shadow-lg">{{ offer.name }}</h2>
+          <p class="text-slate-300">خصم <span class="font-bold">{{offer.discountPercentage}}%</span> ينتهي خلال: <span class="font-mono font-bold text-lg text-pink-400">{{ offerTimeRemaining() }}</span></p>
+        </div>
+        <button (click)="closeOfferGridModal()" class="w-12 h-12 bg-white/10 rounded-2xl text-white hover:bg-white/20 transition">
+          <i class="fa-solid fa-times text-xl"></i>
+        </button>
+      </header>
+      <div class="p-6 overflow-y-auto">
+        @if(offerProducts().length > 0) {
+          <div class="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 gap-4">
+            @for(product of offerProducts(); track product.id) {
+              <div (click)="selectProductFromGrid(product)" class="offer-grid-item">
+                <div class="relative">
+                  <img [src]="product.image" [alt]="product.name" width="200" height="200" class="aspect-square w-full object-cover rounded-xl" referrerpolicy="no-referrer">
+                  <div class="absolute top-2 left-2 px-2 py-1 bg-pink-500 text-white text-xs font-bold rounded-full">
+                    -{{ offer.discountPercentage }}%
+                  </div>
+                </div>
+                <div class="p-3 text-center">
+                  <h4 class="font-bold text-white truncate">{{ product.name }}</h4>
+                  <div class="mt-1">
+                    <span class="text-sm text-red-400 line-through">{{ product.price.toLocaleString() }}</span>
+                    @if(discountedPriceMap().has(product.id)) {
+                      <span class="ml-2 font-bold text-lg text-pink-400">{{ discountedPriceMap().get(product.id)?.toLocaleString('ar-DZ', { minimumFractionDigits: 0, maximumFractionDigits: 0 }) }}</span>
+                    }
+                  </div>
+                </div>
+              </div>
+            }
+          </div>
+        } @else {
+          <p class="text-center text-slate-400 py-16">لا توجد منتجات في هذا العرض حالياً.</p>
+        }
+      </div>
+    </div>
+  </div>
+}
+
+<!-- CINEMA STORY SHOWCASE MODE OVERLAY -->
+@if (isShowcaseOpen() && products().length > 0) {
+  @let currentProd = products()[currentShowcaseIndex()];
+  <div class="fixed inset-0 z-[200] bg-black text-white overflow-hidden animate-fade-in">
+    
+    <!-- 1. Full Screen Background Image with Animation -->
+    <div class="absolute inset-0 bg-black">
+         <img [src]="currentProd.image" 
+              [alt]="currentProd.name"
+              class="w-full h-full object-cover"
+              [class]="getStoryAnimation(currentShowcaseIndex())"
+              referrerpolicy="no-referrer">
+         <!-- Overlay for readability when intro text is shown -->
+         <div class="absolute inset-0 bg-gradient-to-b from-black/40 via-transparent to-black/60 transition-opacity duration-1000"
+              [class.opacity-0]="!showcaseIntroVisible() && !showcaseDetailsVisible()"
+              [class.opacity-100]="showcaseIntroVisible() || showcaseDetailsVisible()"></div>
+    </div>
+
+    <!-- 2. Header / Progress Bars (Always Visible) -->
+    <div class="absolute top-0 left-0 right-0 z-20 px-2 pt-2 pb-12 bg-gradient-to-b from-black/60 to-transparent">
+      <div class="flex gap-1 h-1 w-full mb-3">
+        @for(product of products(); track product.id; let i = $index) {
+          <div class="h-full rounded-full flex-1 bg-white/30 overflow-hidden backdrop-blur-sm">
+            <div class="h-full bg-white shadow-[0_0_10px_rgba(255,255,255,0.8)] transition-all duration-75 ease-linear"
+                 [style.width]="i < currentShowcaseIndex() ? '100%' : (i === currentShowcaseIndex() ? showcaseProgress() + '%' : '0%')">
+            </div>
+          </div>
+        }
+      </div>
+      <div class="flex justify-between items-center px-2">
+         <div class="flex items-center gap-3">
+             <div class="w-8 h-8 rounded-full border border-white/20 overflow-hidden">
+                <img [src]="settings().logo || 'assets/logo-placeholder.png'" class="w-full h-full object-cover">
+             </div>
+             <span class="font-bold text-sm text-white drop-shadow-md">{{ settings().storeName }}</span>
+             <span class="text-xs text-white/70">{{ currentProd.category }}</span>
+         </div>
+         <button (click)="closeShowcase()" class="w-8 h-8 flex items-center justify-center rounded-full bg-black/20 backdrop-blur-md hover:bg-white/20 transition">
+            <i class="fa-solid fa-xmark text-lg"></i>
+         </button>
+      </div>
+    </div>
+
+    <!-- 3. Interaction Layer (Click Zones) -->
+    <!-- Left Tap (Prev) -->
+    <div (click)="prevShowcaseItem()" class="absolute inset-y-0 left-0 w-[25%] z-10 cursor-pointer"></div>
+    <!-- Right Tap (Next) -->
+    <div (click)="nextShowcaseItem()" class="absolute inset-y-0 right-0 w-[25%] z-10 cursor-pointer"></div>
+    <!-- Center Tap (Toggle Details) -->
+    <div (click)="handleShowcaseClick($event)" class="absolute inset-y-0 left-[25%] right-[25%] z-10 cursor-pointer"></div>
+
+    <!-- 4. Intro Text (Auto-hide) -->
+    @if (showcaseIntroVisible() && !showcaseDetailsVisible()) {
+        <div class="absolute bottom-[15%] left-0 right-0 text-center z-0 px-8 animate-zoom-fade pointer-events-none">
+            <h2 class="text-4xl font-black mb-2 drop-shadow-lg text-white font-heading">{{ currentProd.name }}</h2>
+            <div class="inline-block px-4 py-2 bg-black/30 backdrop-blur-md rounded-full border border-white/20">
+                <span class="text-2xl font-bold text-yellow-400 drop-shadow-md">
+                     @if (discountedPriceMap().has(currentProd.id)) {
+                        {{ discountedPriceMap().get(currentProd.id)?.toLocaleString() }}
+                     } @else {
+                        {{ currentProd.price.toLocaleString() }}
+                     } 
+                     <small class="text-sm text-white/80">د.ج</small>
+                </span>
+            </div>
+        </div>
+    }
+
+    <!-- 5. Details Card (Overlay on Click) -->
+    @if (showcaseDetailsVisible()) {
+       <div class="absolute inset-x-0 bottom-0 top-0 z-30 flex items-center justify-center bg-black/40 backdrop-blur-sm p-4 animate-fade-in" (click)="toggleShowcaseDetails()">
+          <div (click)="$event.stopPropagation()" class="showcase-details-card w-full max-w-sm bg-white/10 backdrop-blur-xl border border-white/20 rounded-3xl p-6 text-center shadow-2xl animate-slide-up relative overflow-hidden">
+             
+             <!-- Glow Effect -->
+             <div class="absolute -top-20 -left-20 w-40 h-40 bg-blue-500/30 rounded-full blur-3xl pointer-events-none"></div>
+             <div class="absolute -bottom-20 -right-20 w-40 h-40 bg-pink-500/30 rounded-full blur-3xl pointer-events-none"></div>
+
+             <h3 class="text-2xl font-black mb-2 text-white">{{ currentProd.name }}</h3>
+             <p class="text-white/80 text-sm mb-6 line-clamp-3 leading-relaxed">{{ currentProd.description }}</p>
+             
+             <div class="mb-6 flex flex-col items-center gap-2">
+                 @if (discountedPriceMap().has(currentProd.id)) {
+                    <span class="text-red-300 line-through text-sm">{{ currentProd.price.toLocaleString() }} د.ج</span>
+                    <span class="text-4xl font-black text-yellow-400">{{ discountedPriceMap().get(currentProd.id)?.toLocaleString() }} <small class="text-base">د.ج</small></span>
+                 } @else {
+                    <span class="text-4xl font-black text-yellow-400">{{ currentProd.price.toLocaleString() }} <small class="text-base">د.ج</small></span>
+                 }
+             </div>
+
+             <!-- Variants (Optional) -->
+             @if (currentProd.variants && currentProd.variants.length > 0) {
+                <div class="flex justify-center gap-2 mb-6">
+                    @for (variant of currentProd.variants; track variant.color) {
+                       <div (click)="selectVariant(variant)" class="w-8 h-8 rounded-full border-2 cursor-pointer transition shadow-lg" 
+                            [style.background]="variant.color"
+                            [class.scale-125]="selectedVariant()?.color === variant.color"
+                            [class.border-white]="selectedVariant()?.color === variant.color"
+                            [class.border-white/30]="selectedVariant()?.color !== variant.color">
+                       </div>
+                    }
+                </div>
+             }
+
+             <button (click)="addToCartFromModal(currentProd, $event)" class="w-full py-4 bg-white text-black font-black rounded-xl hover:scale-[1.02] active:scale-95 transition shadow-lg flex items-center justify-center gap-2">
+                 <i class="fa-solid fa-cart-plus"></i> إضافة للسلة
+             </button>
+          </div>
+       </div>
+    }
+
+  </div>
+}

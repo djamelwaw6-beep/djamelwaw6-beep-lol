@@ -1,0 +1,189 @@
+<div class="min-h-screen flex items-center justify-center p-4 font-sans print:bg-white bg-slate-100 dark:bg-slate-900">
+  <div class="w-full max-w-4xl mx-auto">
+    <!-- Stepper -->
+    <div class="flex items-center justify-center mb-8 print:hidden">
+      <div class="flex items-center">
+        <div class="w-10 h-10 rounded-full flex items-center justify-center text-white" [class.bg-blue-600]="checkoutStep() === 'info'" [class.bg-slate-400]="checkoutStep() !== 'info'" [class.opacity-50]="checkoutStep() !== 'info'">1</div>
+        <span class="font-bold ml-2 text-slate-700 dark:text-white drop-shadow-md hidden sm:inline" [class.dark:text-blue-200]="checkoutStep() === 'info'">المعلومات</span>
+      </div>
+      <div class="flex-1 h-0.5 mx-4" [class.bg-blue-400]="checkoutStep() === 'payment' || checkoutStep() === 'confirmation'" [class.bg-slate-300]="checkoutStep() === 'info'" [class.dark:bg-slate-700]="checkoutStep() === 'info'"></div>
+      <div class="flex items-center">
+        <div class="w-10 h-10 rounded-full flex items-center justify-center text-white" [class.bg-blue-600]="checkoutStep() === 'payment'" [class.bg-slate-400]="checkoutStep() !== 'payment'" [class.opacity-50]="checkoutStep() !== 'payment'">2</div>
+        <span class="font-bold ml-2 text-slate-700 dark:text-white drop-shadow-md hidden sm:inline" [class.dark:text-blue-200]="checkoutStep() === 'payment'">الدفع</span>
+      </div>
+      <div class="flex-1 h-0.5 mx-4" [class.bg-blue-400]="checkoutStep() === 'confirmation'" [class.bg-slate-300]="checkoutStep() !== 'confirmation'" [class.dark:bg-slate-700]="checkoutStep() !== 'confirmation'"></div>
+      <div class="flex items-center">
+        <div class="w-10 h-10 rounded-full flex items-center justify-center text-white" [class.bg-blue-600]="checkoutStep() === 'confirmation'" [class.bg-slate-400]="checkoutStep() !== 'confirmation'" [class.opacity-50]="checkoutStep() !== 'confirmation'">3</div>
+        <span class="font-bold ml-2 text-slate-700 dark:text-white drop-shadow-md hidden sm:inline" [class.dark:text-blue-200]="checkoutStep() === 'confirmation'">التأكيد</span>
+      </div>
+    </div>
+
+    <!-- Main Content -->
+    <div class="bg-white/50 dark:bg-slate-800/50 backdrop-blur-xl border border-white/20 dark:border-slate-700/50 rounded-3xl shadow-2xl overflow-hidden grid grid-cols-1 md:grid-cols-2 print:shadow-none print:grid-cols-1 print:bg-transparent">
+      <!-- Left side (Form or Confirmation) -->
+      <div class="p-8" [class.md:col-span-2]="checkoutStep() === 'confirmation'">
+        @switch (checkoutStep()) {
+          @case ('info') {
+            <div class="animate-fade-in">
+              <div class="flex justify-between items-center mb-6">
+                <h2 class="text-2xl font-black text-slate-800 dark:text-slate-100">معلومات التوصيل</h2>
+                <a routerLink="/store" class="text-sm font-bold text-blue-600 hover:underline flex items-center gap-2">
+                  <span>العودة للمتجر</span>
+                  <i class="fa-solid fa-arrow-left"></i>
+                </a>
+              </div>
+              <form [formGroup]="customerForm" class="space-y-6">
+                <div class="grid grid-cols-1 sm:grid-cols-[140px_1fr] items-center gap-x-4 gap-y-4">
+                  <label class="font-bold text-sm bg-slate-800 text-white text-center py-2 rounded-lg dark:bg-slate-700">الاسم الكامل:</label>
+                  <input formControlName="name" placeholder="مثال: محمد عبد الله" class="w-full p-3 border border-slate-200 bg-slate-100 rounded-lg text-black focus:bg-white focus:border-blue-500 outline-none transition dark:bg-slate-700 dark:border-slate-600 dark:text-white dark:focus:bg-slate-600">
+                  <label class="font-bold text-sm bg-slate-800 text-white text-center py-2 rounded-lg dark:bg-slate-700">رقم الهاتف:</label>
+                  <input formControlName="phone" placeholder="0XXXXXXXXX" class="w-full p-3 border border-slate-200 bg-slate-100 rounded-lg text-black focus:bg-white focus:border-blue-500 outline-none transition dark:bg-slate-700 dark:border-slate-600 dark:text-white dark:focus:bg-slate-600">
+                  <label class="font-bold text-sm bg-slate-800 text-white text-center py-2 rounded-lg dark:bg-slate-700">الولاية:</label>
+                  <select formControlName="wilaya" class="w-full p-3 border border-slate-200 bg-slate-100 rounded-lg text-black focus:bg-white focus:border-blue-500 outline-none transition dark:bg-slate-700 dark:border-slate-600 dark:text-white dark:focus:bg-slate-600">
+                    <option value="" disabled>اختر ولايتك</option>
+                    @for (wilaya of wilayas; track wilaya.name) {
+                      <option [value]="wilaya.name">{{ wilaya.name }}</option>
+                    }
+                  </select>
+                  <label class="font-bold text-sm bg-slate-800 text-white text-center py-2 rounded-lg dark:bg-slate-700">البلدية:</label>
+                  <input formControlName="city" placeholder="بلدية السكن" class="w-full p-3 border border-slate-200 bg-slate-100 rounded-lg text-black focus:bg-white focus:border-blue-500 outline-none transition dark:bg-slate-700 dark:border-slate-600 dark:text-white dark:focus:bg-slate-600">
+                  <label class="font-bold text-sm bg-slate-800 text-white text-center py-2 rounded-lg dark:bg-slate-700">شركة التوصيل:</label>
+                  <select formControlName="deliveryCompany" class="w-full p-3 border border-slate-200 bg-slate-100 rounded-lg text-black focus:bg-white focus:border-blue-500 outline-none transition dark:bg-slate-700 dark:border-slate-600 dark:text-white dark:focus:bg-slate-600">
+                      <option value="" disabled>اختر شركة التوصيل</option>
+                      @for (company of deliveryCompanies; track company.id) {
+                        <option [value]="company.id">{{ company.name }}</option>
+                      }
+                  </select>
+                  <label class="font-bold text-sm bg-slate-800 text-white text-center py-2 rounded-lg dark:bg-slate-700">البريد الإلكتروني:</label>
+                  <input formControlName="email" placeholder="(اختياري)" class="w-full p-3 border border-slate-200 bg-slate-100 rounded-lg text-black focus:bg-white focus:border-blue-500 outline-none transition dark:bg-slate-700 dark:border-slate-600 dark:text-white dark:focus:bg-slate-600">
+                </div>
+                <div class="flex items-center mt-6">
+                  <input #rememberCheckbox id="remember-me" type="checkbox" (change)="rememberMe.set(rememberCheckbox.checked)" [checked]="rememberMe()" class="w-5 h-5 text-blue-600 bg-slate-200 border-slate-300 rounded focus:ring-blue-500 focus:ring-2 cursor-pointer dark:bg-slate-600 dark:border-slate-500">
+                  <label for="remember-me" class="mr-3 text-sm font-bold text-slate-800 dark:text-slate-200 cursor-pointer">تذكرني للمرة القادمة</label>
+                </div>
+                <button (click)="goToPayment()" class="w-full bg-blue-600 text-white font-bold py-4 rounded-xl mt-4 hover:bg-blue-700 transition">
+                  المتابعة إلى الدفع
+                </button>
+              </form>
+            </div>
+          }
+          @case ('payment') {
+            <div class="animate-fade-in">
+                <h2 class="text-2xl font-black mb-6 text-slate-800 dark:text-slate-100">طريقة الدفع</h2>
+                <div class="space-y-3">
+                    <div (click)="selectedPaymentMethod.set('cod')" class="p-4 border-2 rounded-xl cursor-pointer flex items-center gap-4 bg-white/50 dark:bg-slate-700/50" [class.border-blue-600]="selectedPaymentMethod() === 'cod'" [class.border-transparent]="selectedPaymentMethod() !== 'cod'" [class.dark:border-slate-600]="selectedPaymentMethod() !== 'cod'">
+                        <div class="w-12 h-12 rounded-full bg-green-500 flex items-center justify-center">
+                            <i class="fa-solid fa-hand-holding-dollar text-2xl text-white"></i>
+                        </div>
+                        <span class="font-bold text-lg text-slate-800 dark:text-slate-200">الدفع عند الإستلام</span>
+                    </div>
+                    <div (click)="selectedPaymentMethod.set('baridi')" class="p-4 border-2 rounded-xl cursor-pointer flex items-center gap-4 bg-white/50 dark:bg-slate-700/50" [class.border-blue-600]="selectedPaymentMethod() === 'baridi'" [class.border-transparent]="selectedPaymentMethod() !== 'baridi'" [class.dark:border-slate-600]="selectedPaymentMethod() !== 'baridi'">
+                        <div class="w-12 h-12 rounded-full bg-yellow-500 flex items-center justify-center">
+                            <i class="fa-solid fa-credit-card text-2xl text-white"></i>
+                        </div>
+                        <span class="font-bold text-lg text-slate-800 dark:text-slate-200">بريدي موب</span>
+                    </div>
+                    <div (click)="selectedPaymentMethod.set('visa')" class="p-4 border-2 rounded-xl cursor-pointer flex items-center gap-4 bg-white/50 dark:bg-slate-700/50" [class.border-blue-600]="selectedPaymentMethod() === 'visa'" [class.border-transparent]="selectedPaymentMethod() !== 'visa'" [class.dark:border-slate-600]="selectedPaymentMethod() !== 'visa'">
+                        <div class="w-12 h-12 rounded-full bg-blue-800 flex items-center justify-center">
+                            <i class="fa-brands fa-cc-visa text-2xl text-white"></i>
+                        </div>
+                        <span class="font-bold text-lg text-slate-800 dark:text-slate-200">بطاقة فيزا</span>
+                    </div>
+                </div>
+                <button (click)="confirmOrder()" class="w-full bg-blue-600 text-white font-bold py-4 rounded-xl mt-6 hover:bg-blue-700 transition">
+                  تأكيد الطلب
+                </button>
+                <button (click)="checkoutStep.set('info')" class="w-full text-slate-600 dark:text-slate-300 font-bold py-2 rounded-xl mt-2 hover:bg-white/30 dark:hover:bg-slate-700/50 transition">
+                  الرجوع
+                </button>
+            </div>
+          }
+          @case ('confirmation') {
+            @if(confirmedOrder(); as order) {
+              <div class="animate-fade-in text-center flex flex-col items-center justify-center h-full py-12 md:py-0">
+                <div class="w-24 h-24 rounded-full bg-green-100 flex items-center justify-center mb-6 animate-pulse-once">
+                    <i class="fa-solid fa-party-horn text-5xl text-green-500"></i>
+                </div>
+                <h2 class="text-3xl font-black text-slate-800 dark:text-slate-100 mb-4">تهانينا، {{ order.customer.name }}!</h2>
+                <p class="text-slate-600 dark:text-slate-300 max-w-md mx-auto text-lg leading-relaxed">
+                  لقد تم تأكيد طلبك بنجاح. شكراً لثقتك في متجر <strong class="text-slate-800 dark:text-slate-100">{{ settings().storeName }}</strong>.
+                  <br>
+                  سيتصل بك فريقنا قريباً على الرقم <strong class="text-slate-800 dark:text-slate-100 font-mono">{{ order.customer.phone }}</strong> للمتابعة.
+                </p>
+
+                @if(showUnverifiedNotificationWarning()) {
+                  <div class="mt-8 p-4 bg-yellow-100 dark:bg-yellow-900/50 border-r-4 border-yellow-500 text-yellow-800 dark:text-yellow-200 rounded-lg max-w-md animate-fade-in">
+                    <div class="flex items-start">
+                      <div class="flex-shrink-0">
+                        <i class="fa-solid fa-triangle-exclamation text-xl text-yellow-500"></i>
+                      </div>
+                      <div class="mr-3 text-right">
+                        <p class="font-bold">تنبيه: لم يتم إرسال إشعار الطلب!</p>
+                        <p class="text-sm mt-1">
+                          الربط غير مؤكد. لن تصلك رسائل بالطلبات الجديدة حتى تقوم بتأكيد وجهة الإشعارات.
+                        </p>
+                        <a [routerLink]="['/admin']" [queryParams]="{ tab: 'notifications' }" class="mt-3 inline-block font-bold text-sm text-yellow-900 dark:text-yellow-100 hover:underline">
+                          اذهب إلى الإعدادات للتأكيد &rarr;
+                        </a>
+                      </div>
+                    </div>
+                  </div>
+                }
+
+                <div class="mt-10">
+                  <a routerLink="/store" class="px-10 py-4 rounded-xl bg-blue-600 text-white font-bold hover:bg-blue-700 transition-all shadow-lg hover:shadow-xl text-lg">
+                    العودة إلى المتجر
+                  </a>
+                </div>
+              </div>
+            }
+          }
+        }
+      </div>
+
+      <!-- Right side (Summary) -->
+      @if (checkoutStep() !== 'confirmation') {
+        <div class="bg-black/10 dark:bg-slate-900/50 p-8 print:bg-white">
+          <h3 class="text-xl font-black mb-6 border-b pb-4 text-slate-800 dark:text-slate-200 dark:border-slate-700">ملخص الطلب</h3>
+          <div class="space-y-4 max-h-64 overflow-y-auto pr-2 print:max-h-none">
+            @for (item of cart(); track item.id) {
+              <div class="flex items-start gap-4">
+                <img [src]="item.image" [alt]="item.name" width="64" height="64" class="w-16 h-16 rounded-lg object-cover">
+                <div class="flex-1">
+                  <p class="font-bold text-slate-800 dark:text-slate-200">{{ item.name }}</p>
+                  @if (item.selectedVariant) {
+                    <div class="flex items-center gap-2 text-sm text-slate-600 dark:text-slate-400">
+                      <div class="w-4 h-4 rounded-full border border-slate-400 dark:border-slate-500" [style.backgroundColor]="item.selectedVariant.color"></div>
+                      <span>اللون المختار</span>
+                    </div>
+                  }
+                  <p class="text-sm text-slate-600 dark:text-slate-400 mt-1">{{ item.quantity }} x {{ item.price.toLocaleString() }}</p>
+                </div>
+                <p class="font-bold text-slate-800 dark:text-slate-200">{{ (item.price * item.quantity).toLocaleString() }} د.ج</p>
+              </div>
+            }
+          </div>
+
+          <div class="border-t dark:border-slate-700 pt-6 mt-6 space-y-2">
+            <div class="flex justify-between text-slate-700 dark:text-slate-300">
+              <span>المجموع الفرعي</span>
+              <span class="font-bold text-slate-800 dark:text-slate-200">{{ subtotal().toLocaleString() }} د.ج</span>
+            </div>
+            <div class="flex justify-between text-slate-700 dark:text-slate-300">
+              <span>شحن للولاية</span>
+              <span class="font-bold text-slate-800 dark:text-slate-200">{{ shippingCost().toLocaleString() }} د.ج</span>
+            </div>
+            <div class="flex justify-between text-slate-700 dark:text-slate-300">
+              <span>رسوم شركة التوصيل</span>
+              <span class="font-bold text-slate-800 dark:text-slate-200">{{ deliveryFee().toLocaleString() }} د.ج</span>
+            </div>
+            <div class="flex justify-between font-black text-xl mt-4 pt-4 border-t dark:border-slate-700 text-slate-800 dark:text-slate-100">
+              <span>الإجمالي</span>
+              <span>{{ total().toLocaleString() }} د.ج</span>
+            </div>
+          </div>
+        </div>
+      }
+    </div>
+  </div>
+</div>

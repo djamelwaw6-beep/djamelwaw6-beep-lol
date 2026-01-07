@@ -1,0 +1,7 @@
+{
+  "name": "Platinum Store Pro",
+  "description": "A sophisticated e-commerce platform with a powerful admin dashboard. Manage products, customize store appearance, and leverage AI for image generation. This application provides a full-featured online store experience, from browsing products to a multi-step checkout process.",
+  "requestFramePermissions": [
+    "camera"
+  ]
+}
