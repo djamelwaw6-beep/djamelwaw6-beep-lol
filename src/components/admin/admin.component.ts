@@ -313,19 +313,71 @@ export class AdminComponent {
   removeVariant(i: number) { this.variants.removeAt(i); }
   printOrder() { window.print(); }
   downloadOrder(order: Order) { const blob = new Blob([`Order #${order.id}\n${order.customer.name}\n${order.total}`], {type: 'text/plain'}); const a = document.createElement('a'); a.href = URL.createObjectURL(blob); a.download = 'order.txt'; a.click(); }
-  deleteOrder(e: Event, order: Order) { e.stopPropagation(); if(confirm('حذف الطلب؟')) this.orderService.deleteOrder(order.id!); }
+  deleteOrder(e: Event, order: Order) { 
+    e.stopPropagation(); 
+    if (confirm('هل أنت متأكد من حذف هذا الطلب؟')) { 
+      this.orderService.deleteOrder(order.id!); 
+      this.settingsService.showToast('تم حذف الطلب بنجاح'); 
+    } 
+  }
   togglePrintOptions(e: Event, id: number | undefined) { e.stopPropagation(); this.activePrintMenuOrderId.update(v => v === id ? null : id); }
-  saveSection() { const val = this.sectionForm.value; if (this.isEditingSection() && this.editingSectionId()) this.settingsService.updateStoreSection({ ...val, id: this.editingSectionId()! } as any); else this.settingsService.addStoreSection(val as any); this.cancelSectionEdit(); }
+  saveSection() { 
+    const val = this.sectionForm.value; 
+    if (this.isEditingSection() && this.editingSectionId()) {
+      this.settingsService.updateStoreSection({ ...val, id: this.editingSectionId()! } as any);
+      this.settingsService.showToast('تم تعديل القسم بنجاح');
+    } else {
+      this.settingsService.addStoreSection(val as any);
+      this.settingsService.showToast('تم إضافة القسم بنجاح');
+    }
+    this.cancelSectionEdit(); 
+  }
   editSection(s: StoreSection) { this.isEditingSection.set(true); this.editingSectionId.set(s.id); this.sectionForm.patchValue(s); }
-  deleteSection(id: number) { if(confirm('حذف؟')) this.settingsService.deleteStoreSection(id); }
+  deleteSection(id: number) { 
+    if (confirm('هل أنت متأكد من حذف هذا القسم؟')) { 
+      this.settingsService.deleteStoreSection(id); 
+      this.settingsService.showToast('تم حذف القسم بنجاح'); 
+    } 
+  }
   cancelSectionEdit() { this.isEditingSection.set(false); this.sectionForm.reset({ productCount: 4, columns: 4 }); }
-  saveDeliveryCompany() { const val = this.deliveryForm.value; if (this.isEditingDelivery() && this.editingDeliveryId()) this.settingsService.updateDeliveryCompany({ ...val, id: this.editingDeliveryId()! } as any); else this.settingsService.addDeliveryCompany(val as any); this.cancelDeliveryEdit(); }
+  saveDeliveryCompany() { 
+    const val = this.deliveryForm.value; 
+    if (this.isEditingDelivery() && this.editingDeliveryId()) {
+      this.settingsService.updateDeliveryCompany({ ...val, id: this.editingDeliveryId()! } as any);
+      this.settingsService.showToast('تم تعديل شركة التوصيل بنجاح');
+    } else {
+      this.settingsService.addDeliveryCompany(val as any);
+      this.settingsService.showToast('تم إضافة شركة التوصيل بنجاح');
+    }
+    this.cancelDeliveryEdit(); 
+  }
   editCompany(c: any) { this.isEditingDelivery.set(true); this.editingDeliveryId.set(c.id); this.deliveryForm.patchValue(c); }
-  deleteCompany(id: number) { this.settingsService.deleteDeliveryCompany(id); }
+  deleteCompany(id: number) { 
+    if (confirm('هل أنت متأكد من حذف شركة التوصيل هذه؟')) { 
+      this.settingsService.deleteDeliveryCompany(id); 
+      this.settingsService.showToast('تم حذف شركة التوصيل بنجاح'); 
+    } 
+  }
   cancelDeliveryEdit() { this.isEditingDelivery.set(false); this.deliveryForm.reset(); }
   editBot(b: MarketingBot) { this.isEditingBot.set(true); this.marketingBotForm.patchValue(b); }
-  saveBot() { const val = this.marketingBotForm.getRawValue(); if(this.isEditingBot()) { const existing = this.settings().marketingBots.find(bot => bot.id === val.id); if(existing) this.settingsService.updateMarketingBot({...existing, ...val}); } else { this.settingsService.addMarketingBot(val as any); } this.cancelBotEdit(); }
-  deleteBot(id: string) { if(confirm('حذف؟')) this.settingsService.deleteMarketingBot(id); }
+  saveBot() { 
+    const val = this.marketingBotForm.getRawValue(); 
+    if(this.isEditingBot()) { 
+      const existing = this.settings().marketingBots.find(bot => bot.id === val.id); 
+      if(existing) this.settingsService.updateMarketingBot({...existing, ...val}); 
+      this.settingsService.showToast('تم تعديل الروبوت التسويقي بنجاح');
+    } else { 
+      this.settingsService.addMarketingBot(val as any); 
+      this.settingsService.showToast('تم إضافة الروبوت التسويقي بنجاح');
+    } 
+    this.cancelBotEdit(); 
+  }
+  deleteBot(id: string) { 
+    if (confirm('هل أنت متأكد من حذف هذا الروبوت التسويقي؟')) { 
+      this.settingsService.deleteMarketingBot(id); 
+      this.settingsService.showToast('تم حذف الروبوت التسويقي بنجاح'); 
+    } 
+  }
   cancelBotEdit() { this.isEditingBot.set(false); this.marketingBotForm.reset({discountPercentage: 20, durationHours: 24}); }
   toggleBot(b: MarketingBot) { this.settingsService.updateMarketingBot({ ...b, enabled: !b.enabled, offerEndDate: !b.enabled ? new Date(Date.now() + b.durationHours*3600000).toISOString() : null }); }
   openProductSelector(fg: FormGroup) { this.editingBotFormForProducts.set(fg); this.tempSelectedIds.set(new Set(fg.value.productIds || [])); this.isProductSelectorOpen.set(true); this.isSelectingForAd.set(false); }
