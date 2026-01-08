@@ -291,7 +291,7 @@
     <div>
         <h1 class="text-3xl font-black mb-6 text-slate-800 dark:text-slate-100">الإعدادات والمظهر</h1>
         <form [formGroup]="settingsForm" (ngSubmit)="saveSettings()" class="bg-slate-50 dark:bg-slate-800 p-6 rounded-2xl shadow-lg space-y-8">
-             <!-- ... (Store Info, Hero, etc. content preserved implicitly via existing component structure, focus on templates that changed) -->
+             <!-- Store Info Section -->
              <div class="space-y-4">
                 <h3 class="text-xl font-bold text-slate-700 dark:text-slate-200 border-b pb-2">معلومات المتجر</h3>
                 <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
@@ -309,15 +309,33 @@
                              </label>
                         </div>
                     </div>
+                    <div>
+                        <label class="block text-sm font-bold mb-1 text-slate-600 dark:text-slate-400">تأثير الشعار</label>
+                        <select formControlName="logoEffect" class="w-full p-3 border rounded-lg bg-white dark:bg-slate-700 dark:border-slate-600 text-slate-800 dark:text-white">
+                            <option value="none">بدون</option>
+                            <option value="pulse">نبض</option>
+                            <option value="rotate">دوران</option>
+                            <option value="bounce">ارتداد</option>
+                            <option value="sparkle">وميض</option>
+                            <option value="glow">توهج</option>
+                            <option value="3d-effect">تأثير ثلاثي الأبعاد</option>
+                        </select>
+                    </div>
                      <div>
-                        <label class="block text-sm font-bold mb-1 text-slate-600 dark:text-slate-400">عدد الأعمدة</label>
-                        <input type="number" formControlName="gridColumns" min="1" max="6" class="w-full p-3 border rounded-lg bg-white dark:bg-slate-700 dark:border-slate-600 text-slate-800 dark:text-white">
+                        <label class="block text-sm font-bold mb-1 text-slate-600 dark:text-slate-400">شكل الشعار</label>
+                        <select formControlName="logoShape" class="w-full p-3 border rounded-lg bg-white dark:bg-slate-700 dark:border-slate-600 text-slate-800 dark:text-white">
+                            <option value="default">افتراضي</option>
+                            <option value="circle">دائري</option>
+                            <option value="monogram">أحادي الحرف</option>
+                            <option value="neon-sign">إشارة نيون</option>
+                            <option value="golden-emblem">شعار ذهبي</option>
+                        </select>
                     </div>
                 </div>
              </div>
-             <!-- [Abbreviated for brevity: Hero, Appearance, Cards, Other Settings are kept same] -->
-             <!-- Re-inserting required parts to ensure file validity -->
-              <div class="space-y-4">
+
+             <!-- Hero Section -->
+             <div class="space-y-4">
                 <h3 class="text-xl font-bold text-slate-700 dark:text-slate-200 border-b pb-2">واجهة الترحيب (Hero)</h3>
                 <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
                     <div>
@@ -325,29 +343,176 @@
                         <input formControlName="heroTitle" class="w-full p-3 border rounded-lg bg-white dark:bg-slate-700 dark:border-slate-600 text-slate-800 dark:text-white">
                     </div>
                     <div>
+                        <label class="block text-sm font-bold mb-1 text-slate-600 dark:text-slate-400">لون العنوان</label>
+                        <input type="color" formControlName="heroColor" class="h-12 w-full rounded-lg cursor-pointer border dark:border-slate-600">
+                    </div>
+                    <div>
                         <label class="block text-sm font-bold mb-1 text-slate-600 dark:text-slate-400">نوع الخط</label>
                         <select formControlName="heroFont" class="w-full p-3 border rounded-lg bg-white dark:bg-slate-700 dark:border-slate-600 text-slate-800 dark:text-white">
                             <option value="'Tajawal', sans-serif">Tajawal (تجوال)</option>
                             <option value="'Cairo', sans-serif">Cairo (القاهرة)</option>
                             <option value="'Amiri', serif">Amiri (أميري)</option>
+                            <option value="'Changa', sans-serif">Changa (تشانجا)</option>
+                            <option value="'Noto Kufi Arabic', sans-serif">Noto Kufi Arabic</option>
+                            <option value="'Markazi Text', serif">Markazi Text</option>
+                            <option value="'IBM Plex Sans Arabic', sans-serif">IBM Plex Sans Arabic</option>
                         </select>
                     </div>
                      <div>
                         <label class="block text-sm font-bold mb-1 text-slate-600 dark:text-slate-400">حجم الخط</label>
                         <select formControlName="heroSize" class="w-full p-3 border rounded-lg bg-white dark:bg-slate-700 dark:border-slate-600 text-slate-800 dark:text-white">
+                            <option value="2.5rem">صغير</option>
                             <option value="4rem">متوسط</option>
-                            <option value="6rem">كبير</option>
+                            <option value="5rem">كبير</option>
+                            <option value="6rem">كبير جداً</option>
                         </select>
-                    </div>
-                    <div>
-                        <label class="block text-sm font-bold mb-1 text-slate-600 dark:text-slate-400">لون العنوان</label>
-                        <input type="color" formControlName="heroColor" class="h-12 w-full rounded-lg cursor-pointer">
                     </div>
                      <div>
                         <label class="block text-sm font-bold mb-1 text-slate-600 dark:text-slate-400">حركة العنوان</label>
                         <select formControlName="heroAnimation" class="w-full p-3 border rounded-lg bg-white dark:bg-slate-700 dark:border-slate-600 text-slate-800 dark:text-white">
+                            <option value="none">بدون</option>
                             <option value="slide">انزلاق</option>
                             <option value="fade">ظهور تدريجي</option>
+                            <option value="pulse">نبض</option>
+                            <option value="bounce">ارتداد</option>
+                            <option value="zoom">تكبير</option>
+                            <option value="typewriter">كتابة آلة كاتبة</option>
+                            <option value="blur-in">تلاشي ضبابي</option>
+                            <option value="rotate-in">دوران للداخل</option>
+                        </select>
+                    </div>
+                </div>
+             </div>
+
+             <!-- Store Appearance Section -->
+             <div class="space-y-4">
+                <h3 class="text-xl font-bold text-slate-700 dark:text-slate-200 border-b pb-2">مظهر المتجر</h3>
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                    <div>
+                        <label class="block text-sm font-bold mb-1 text-slate-600 dark:text-slate-400">الصورة الخلفية (URL)</label>
+                        <div class="flex gap-2">
+                            <input formControlName="bgImage" placeholder="رابط مباشر للصورة أو اترك فارغاً" class="flex-1 p-3 border rounded-lg bg-white dark:bg-slate-700 dark:border-slate-600 text-slate-800 dark:text-white">
+                            <label class="bg-slate-200 dark:bg-slate-600 px-3 rounded-lg flex items-center justify-center cursor-pointer hover:bg-slate-300 transition" title="رفع صورة">
+                                <i class="fa-solid fa-upload"></i>
+                                <input type="file" class="hidden" (change)="handleFileInputChange($any($event.target), settingsForm.controls['bgImage'], 'bgImageUpload')">
+                            </label>
+                        </div>
+                        @if (settingsForm.get('bgImage')?.value) {
+                            <button type="button" (click)="settingsForm.get('bgImage')?.setValue('')" class="mt-2 text-red-500 text-sm hover:underline">إزالة الصورة</button>
+                        }
+                    </div>
+                    <div>
+                        <label class="block text-sm font-bold mb-1 text-slate-600 dark:text-slate-400">لون الخلفية (إذا لا توجد صورة)</label>
+                        <input type="color" formControlName="bgColor" class="h-12 w-full rounded-lg cursor-pointer border dark:border-slate-600">
+                    </div>
+                    <div>
+                        <label class="block text-sm font-bold mb-1 text-slate-600 dark:text-slate-400">لون تراكب الخلفية</label>
+                        <input type="color" formControlName="bgOverlayColor" class="h-12 w-full rounded-lg cursor-pointer border dark:border-slate-600">
+                    </div>
+                    <div>
+                        <label class="block text-sm font-bold mb-1 text-slate-600 dark:text-slate-400">شفافية تراكب الخلفية (0-1)</label>
+                        <input type="number" formControlName="bgOverlayOpacity" min="0" max="1" step="0.1" class="w-full p-3 border rounded-lg bg-white dark:bg-slate-700 dark:border-slate-600 text-slate-800 dark:text-white">
+                    </div>
+                     <div>
+                        <label class="block text-sm font-bold mb-1 text-slate-600 dark:text-slate-400">السمة</label>
+                        <select formControlName="theme" class="w-full p-3 border rounded-lg bg-white dark:bg-slate-700 dark:border-slate-600 text-slate-800 dark:text-white">
+                            <option value="light">فاتح</option>
+                            <option value="dark">داكن</option>
+                        </select>
+                    </div>
+                     <div>
+                        <label class="block text-sm font-bold mb-1 text-slate-600 dark:text-slate-400">عدد أعمدة الشبكة الافتراضية</label>
+                        <input type="number" formControlName="gridColumns" min="1" max="6" class="w-full p-3 border rounded-lg bg-white dark:bg-slate-700 dark:border-slate-600 text-slate-800 dark:text-white">
+                    </div>
+                </div>
+             </div>
+
+             <!-- Product Card Settings -->
+             <div class="space-y-4">
+                <h3 class="text-xl font-bold text-slate-700 dark:text-slate-200 border-b pb-2">إعدادات بطاقة المنتج</h3>
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                    <div>
+                        <label class="block text-sm font-bold mb-1 text-slate-600 dark:text-slate-400">لون خلفية البطاقة</label>
+                        <input type="color" formControlName="cardBgColor" class="h-12 w-full rounded-lg cursor-pointer border dark:border-slate-600">
+                    </div>
+                    <div>
+                        <label class="block text-sm font-bold mb-1 text-slate-600 dark:text-slate-400">لون نص البطاقة</label>
+                        <input type="color" formControlName="cardTextColor" class="h-12 w-full rounded-lg cursor-pointer border dark:border-slate-600">
+                    </div>
+                    <div>
+                        <label class="block text-sm font-bold mb-1 text-slate-600 dark:text-slate-400">ظل البطاقة</label>
+                        <select formControlName="cardShadow" class="w-full p-3 border rounded-lg bg-white dark:bg-slate-700 dark:border-slate-600 text-slate-800 dark:text-white">
+                            <option value="none">بدون</option>
+                            <option value="0 1px 3px 0 rgb(0 0 0 / 0.1), 0 1px 2px -1px rgb(0 0 0 / 0.1)">صغير</option>
+                            <option value="0 10px 15px -3px rgb(0 0 0 / 0.1), 0 4px 6px -4px rgb(0 0 0 / 0.1)">متوسط</option>
+                            <option value="0 20px 25px -5px rgb(0 0 0 / 0.1), 0 8px 10px -6px rgb(0 0 0 / 0.1)">كبير</option>
+                            <option value="0 25px 50px -12px rgb(0 0 0 / 0.25)">كبير جداً</option>
+                        </select>
+                    </div>
+                    <div>
+                        <label class="block text-sm font-bold mb-1 text-slate-600 dark:text-slate-400">شكل البطاقة</label>
+                        <select formControlName="cardShape" class="w-full p-3 border rounded-lg bg-white dark:bg-slate-700 dark:border-slate-600 text-slate-800 dark:text-white">
+                            <option value="default">افتراضي (زوايا مستديرة)</option>
+                            <option value="square">مربع</option>
+                            <option value="circle">دائري</option>
+                            <option value="rhombus">معين</option>
+                            <option value="floating">عائمة (شفافة)</option>
+                        </select>
+                    </div>
+                     <div>
+                        <label class="block text-sm font-bold mb-1 text-slate-600 dark:text-slate-400">حركة البطاقة عند التمرير</label>
+                        <select formControlName="cardAnimation" class="w-full p-3 border rounded-lg bg-white dark:bg-slate-700 dark:border-slate-600 text-slate-800 dark:text-white">
+                            <option value="none">بدون</option>
+                            <option value="magnetic-tilt">إمالة مغناطيسية</option>
+                            <option value="floating-elements">عناصر عائمة</option>
+                            <option value="directional-glare">وهج اتجاهي</option>
+                            <option value="spotlight-focus">تركيز ضوئي</option>
+                            <option value="liquid-distortion">تشوه سائل</option>
+                            <option value="glitch-effect">تأثير الخلل</option>
+                            <option value="staggered-pop">ظهور متدرج</option>
+                            <option value="random-mix">مزج عشوائي</option>
+                        </select>
+                    </div>
+                    <div>
+                        <label class="block text-sm font-bold mb-1 text-slate-600 dark:text-slate-400">سرعة الحركة (بالثواني)</label>
+                        <input type="number" formControlName="cardAnimationSpeed" min="0.1" max="10" step="0.1" class="w-full p-3 border rounded-lg bg-white dark:bg-slate-700 dark:border-slate-600 text-slate-800 dark:text-white">
+                    </div>
+                    <div class="flex items-center gap-2">
+                        <input type="checkbox" formControlName="cardShowTitle" id="cardShowTitle" class="w-5 h-5 text-blue-600 bg-slate-200 border-slate-300 rounded focus:ring-blue-500 focus:ring-2 cursor-pointer dark:bg-slate-600 dark:border-slate-500">
+                        <label for="cardShowTitle" class="text-sm font-bold text-slate-800 dark:text-slate-200 cursor-pointer">عرض عنوان المنتج تحت البطاقة</label>
+                    </div>
+                    <div class="flex items-center gap-2">
+                        <input type="checkbox" formControlName="cardShowPrice" id="cardShowPrice" class="w-5 h-5 text-blue-600 bg-slate-200 border-slate-300 rounded focus:ring-blue-500 focus:ring-2 cursor-pointer dark:bg-slate-600 dark:border-slate-500">
+                        <label for="cardShowPrice" class="text-sm font-bold text-slate-800 dark:text-slate-200 cursor-pointer">عرض سعر المنتج تحت البطاقة</label>
+                    </div>
+                </div>
+             </div>
+             
+             <!-- Notifications and Offers Display -->
+             <div class="space-y-4">
+                <h3 class="text-xl font-bold text-slate-700 dark:text-slate-200 border-b pb-2">الإشعارات وعروض المتجر</h3>
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                    <div>
+                        <label class="block text-sm font-bold mb-1 text-slate-600 dark:text-slate-400">شكل الإشعارات المنبثقة</label>
+                        <select formControlName="notificationShape" class="w-full p-3 border rounded-lg bg-white dark:bg-slate-700 dark:border-slate-600 text-slate-800 dark:text-white">
+                            <option value="default">افتراضي (أبيض)</option>
+                            <option value="top-bar">شريط علوي</option>
+                            <option value="bottom-bar">شريط سفلي</option>
+                            <option value="side-accent">شريط جانبي</option>
+                            <option value="glow">متوهج</option>
+                            <option value="gradient">تدرج لوني</option>
+                            <option value="minimal">بسيط</option>
+                            <option value="retro">ريترو</option>
+                            <option value="neumorphic">نيومورفيك</option>
+                            <option value="sleek">أنيق</option>
+                        </select>
+                    </div>
+                    <div>
+                        <label class="block text-sm font-bold mb-1 text-slate-600 dark:text-slate-400">مكان عرض العروض الترويجية</label>
+                        <select formControlName="offerDisplayType" class="w-full p-3 border rounded-lg bg-white dark:bg-slate-700 dark:border-slate-600 text-slate-800 dark:text-white">
+                            <option value="beside-logo">بجانب الشعار</option>
+                            <option value="beside-cart">بجانب سلة التسوق</option>
+                            <option value="above-hero">فوق قسم الترحيب</option>
                         </select>
                     </div>
                 </div>
@@ -625,9 +790,35 @@
                     <label class="font-bold">نص "من نحن"</label>
                     <textarea formControlName="aboutText" rows="4" class="w-full p-2 border rounded-lg mt-1 dark:bg-slate-700"></textarea>
                  </div>
-                 <div formGroupName="socialLinks" class="grid grid-cols-2 gap-4">
-                    <input formControlName="facebook" placeholder="رابط فيسبوك" class="p-2 border rounded-lg dark:bg-slate-700">
-                    <input formControlName="instagram" placeholder="رابط انستغرام" class="p-2 border rounded-lg dark:bg-slate-700">
+                 <div>
+                    <label class="font-bold">البريد الإلكتروني للتواصل</label>
+                    <input formControlName="contactEmail" class="w-full p-2 border rounded-lg mt-1 dark:bg-slate-700">
+                 </div>
+                 <div formGroupName="socialLinks" class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                    <div>
+                        <label class="font-bold">فيسبوك</label>
+                        <input formControlName="facebook" placeholder="رابط فيسبوك" class="p-2 border rounded-lg mt-1 dark:bg-slate-700">
+                    </div>
+                    <div>
+                        <label class="font-bold">انستغرام</label>
+                        <input formControlName="instagram" placeholder="رابط انستغرام" class="p-2 border rounded-lg mt-1 dark:bg-slate-700">
+                    </div>
+                    <div>
+                        <label class="font-bold">تويتر (X)</label>
+                        <input formControlName="twitter" placeholder="رابط تويتر" class="p-2 border rounded-lg mt-1 dark:bg-slate-700">
+                    </div>
+                    <div>
+                        <label class="font-bold">تلغرام</label>
+                        <input formControlName="telegram" placeholder="رابط تلغرام" class="p-2 border rounded-lg mt-1 dark:bg-slate-700">
+                    </div>
+                    <div>
+                        <label class="font-bold">تيك توك</label>
+                        <input formControlName="tiktok" placeholder="رابط تيك توك" class="p-2 border rounded-lg mt-1 dark:bg-slate-700">
+                    </div>
+                    <div>
+                        <label class="font-bold">يوتيوب</label>
+                        <input formControlName="youtube" placeholder="رابط يوتيوب" class="p-2 border rounded-lg mt-1 dark:bg-slate-700">
+                    </div>
                  </div>
                  <div formArrayName="quickLinks">
                      <h4 class="font-bold mt-4">روابط سريعة</h4>
@@ -649,30 +840,54 @@
 <ng-template #sectionsTemplate>
     <div class="space-y-6">
         <h1 class="text-3xl font-black text-slate-800 dark:text-slate-100">أقسام المتجر</h1>
-        <form [formGroup]="sectionForm" (ngSubmit)="saveSection()" class="bg-slate-50 dark:bg-slate-800 p-6 rounded-2xl shadow-lg grid grid-cols-2 md:grid-cols-4 gap-4 items-end">
-             <div class="flex-1">
+        <form [formGroup]="sectionForm" (ngSubmit)="saveSection()" class="bg-slate-50 dark:bg-slate-800 p-6 rounded-2xl shadow-lg grid grid-cols-1 md:grid-cols-4 gap-4 items-end">
+             <div class="flex-1 col-span-1 md:col-span-2">
                 <label class="font-bold">اسم القسم</label>
                 <input formControlName="name" class="w-full p-2 border rounded-lg mt-1 dark:bg-slate-700">
              </div>
-             <div class="flex-1">
+             <div>
                 <label class="font-bold">عدد المنتجات</label>
-                <input type="number" formControlName="productCount" class="w-full p-2 border rounded-lg mt-1 dark:bg-slate-700">
-             </div>
-             <div class="flex-1">
-                <label class="font-bold">عدد الأعمدة</label>
-                <input type="number" formControlName="columns" class="w-full p-2 border rounded-lg mt-1 dark:bg-slate-700">
+                <input type="number" formControlName="productCount" min="1" max="10" class="w-full p-2 border rounded-lg mt-1 dark:bg-slate-700">
              </div>
              <div>
-                <button type="submit" class="px-4 py-2 bg-blue-600 text-white rounded-lg font-bold w-full">حفظ القسم</button>
+                <label class="font-bold">عدد الأعمدة</label>
+                <input type="number" formControlName="columns" min="1" max="6" class="w-full p-2 border rounded-lg mt-1 dark:bg-slate-700">
+             </div>
+             <div>
+                <label class="block text-sm font-bold mb-1 text-slate-600 dark:text-slate-400">شكل بطاقة القسم</label>
+                <select formControlName="cardShape" class="w-full p-3 border rounded-lg bg-white dark:bg-slate-700 dark:border-slate-600 text-slate-800 dark:text-white">
+                    <option value="default">افتراضي (زوايا مستديرة)</option>
+                    <option value="square">مربع</option>
+                    <option value="circle">دائري</option>
+                    <option value="rhombus">معين</option>
+                    <option value="floating">عائمة (شفافة)</option>
+                </select>
+             </div>
+              <div>
+                <label class="block text-sm font-bold mb-1 text-slate-600 dark:text-slate-400">حركة بطاقة القسم</label>
+                <select formControlName="cardAnimation" class="w-full p-3 border rounded-lg bg-white dark:bg-slate-700 dark:border-slate-600 text-slate-800 dark:text-white">
+                    <option value="none">بدون</option>
+                    <option value="magnetic-tilt">إمالة مغناطيسية</option>
+                    <option value="floating-elements">عناصر عائمة</option>
+                    <option value="directional-glare">وهج اتجاهي</option>
+                    <option value="spotlight-focus">تركيز ضوئي</option>
+                    <option value="liquid-distortion">تشوه سائل</option>
+                    <option value="glitch-effect">تأثير الخلل</option>
+                    <option value="staggered-pop">ظهور متدرج</option>
+                    <option value="random-mix">مزج عشوائي</option>
+                </select>
+            </div>
+             <div class="col-span-1 md:col-span-4 flex gap-2">
+                <button type="submit" class="px-6 py-3 bg-blue-600 text-white rounded-lg font-bold flex-1">حفظ القسم</button>
                 @if(isEditingSection()) {
-                   <button type="button" (click)="cancelSectionEdit()" class="mt-2 px-4 py-2 bg-slate-200 dark:bg-slate-600 rounded-lg w-full">إلغاء</button>
+                   <button type="button" (click)="cancelSectionEdit()" class="px-6 py-3 bg-slate-200 dark:bg-slate-600 rounded-lg flex-1">إلغاء</button>
                 }
              </div>
         </form>
         <div class="bg-slate-50 dark:bg-slate-800 p-6 rounded-2xl shadow-lg">
            @for(s of settings().storeSections; track s.id) {
               <div class="flex justify-between items-center p-2 border-b dark:border-slate-700">
-                 <span>{{s.name}} ({{s.productCount}} منتجات / {{s.columns}} أعمدة)</span>
+                 <span>{{s.name}} ({{s.productCount}} منتجات / {{s.columns}} أعمدة) - الشكل: {{ s.cardShape }} - الحركة: {{ s.cardAnimation }}</span>
                  <div class="flex gap-2">
                     <button (click)="editSection(s)" class="text-blue-500"><i class="fa-solid fa-pen"></i></button>
                     <button (click)="deleteSection(s.id)" class="text-red-500"><i class="fa-solid fa-trash"></i></button>

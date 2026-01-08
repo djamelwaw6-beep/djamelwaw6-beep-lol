@@ -84,7 +84,7 @@ export class AdminComponent {
     cardTextColor: ['#1e293b'],
     cardShadow: ['0 10px 15px -3px rgb(0 0 0 / 0.1)'], 
     cardAnimation: ['magnetic-tilt'],
-    cardAnimationSpeed: [20],
+    cardAnimationSpeed: [25],
     cardShape: ['default'],
     cardShowTitle: [false],
     cardShowPrice: [false],
@@ -133,8 +133,8 @@ export class AdminComponent {
     name: ['', Validators.required],
     productCount: [4],
     columns: [4],
-    cardShape: ['default'],
-    cardAnimation: ['magnetic-tilt']
+    cardShape: ['default'], // Added cardShape
+    cardAnimation: ['magnetic-tilt'] // Added cardAnimation
   });
 
   isEditingDelivery = signal(false);
@@ -270,7 +270,15 @@ export class AdminComponent {
   }
 
   // --- CRUD Actions ---
-  saveSettings() { if (this.settingsForm.invalid) return; this.settingsService.updateSettings(this.settingsForm.getRawValue() as any); this.settingsService.showToast('تم حفظ الإعدادات'); }
+  saveSettings() { 
+    if (this.settingsForm.invalid) {
+        this.settingsService.showToast('الرجاء تعبئة جميع الحقول المطلوبة بشكل صحيح.');
+        this.settingsForm.markAllAsTouched();
+        return;
+    }
+    this.settingsService.updateSettings(this.settingsForm.getRawValue() as any); 
+    this.settingsService.showToast('تم حفظ الإعدادات'); 
+  }
   saveProduct() {
     if (this.productForm.invalid) return;
     const raw = this.productForm.getRawValue();
@@ -323,6 +331,11 @@ export class AdminComponent {
   }
   togglePrintOptions(e: Event, id: number | undefined) { e.stopPropagation(); this.activePrintMenuOrderId.update(v => v === id ? null : id); }
   saveSection() { 
+    if (this.sectionForm.invalid) {
+        this.settingsService.showToast('الرجاء تعبئة اسم القسم وعدد المنتجات والأعمدة بشكل صحيح.');
+        this.sectionForm.markAllAsTouched();
+        return;
+    }
     const val = this.sectionForm.value; 
     if (this.isEditingSection() && this.editingSectionId()) {
       this.settingsService.updateStoreSection({ ...val, id: this.editingSectionId()! } as any);
@@ -341,8 +354,13 @@ export class AdminComponent {
       this.settingsService.showToast('تم حذف القسم بنجاح'); 
     } 
   }
-  cancelSectionEdit() { this.isEditingSection.set(false); this.sectionForm.reset({ productCount: 4, columns: 4 }); }
+  cancelSectionEdit() { this.isEditingSection.set(false); this.sectionForm.reset({ productCount: 4, columns: 4, cardShape: 'default', cardAnimation: 'magnetic-tilt' }); }
   saveDeliveryCompany() { 
+    if (this.deliveryForm.invalid) {
+        this.settingsService.showToast('الرجاء تعبئة اسم الشركة ورسوم التوصيل بشكل صحيح.');
+        this.deliveryForm.markAllAsTouched();
+        return;
+    }
     const val = this.deliveryForm.value; 
     if (this.isEditingDelivery() && this.editingDeliveryId()) {
       this.settingsService.updateDeliveryCompany({ ...val, id: this.editingDeliveryId()! } as any);
@@ -364,6 +382,11 @@ export class AdminComponent {
   cancelDeliveryEdit() { this.isEditingDelivery.set(false); this.deliveryForm.reset(); }
   editBot(b: MarketingBot) { this.isEditingBot.set(true); this.marketingBotForm.patchValue(b); }
   saveBot() { 
+    if (this.marketingBotForm.invalid) {
+        this.settingsService.showToast('الرجاء تعبئة جميع حقول الروبوت التسويقي بشكل صحيح.');
+        this.marketingBotForm.markAllAsTouched();
+        return;
+    }
     const val = this.marketingBotForm.getRawValue(); 
     if(this.isEditingBot()) { 
       const existing = this.settings().marketingBots.find(bot => bot.id === val.id); 
@@ -390,16 +413,52 @@ export class AdminComponent {
   toggleProductInModal(id: number) { if(this.isSelectingForAd()) this.tempSelectedIds.set(new Set([id])); else this.tempSelectedIds.update(s => { s.has(id)?s.delete(id):s.add(id); return new Set(s); }); }
   confirmProductSelection() { if(this.isSelectingForAd()) { const pid = [...this.tempSelectedIds()][0]; const p = this.products().find(x => x.id === pid); if(p) this.adForm.patchValue({productName: p.name, productDescription: p.description}); } else { this.editingBotFormForProducts()?.patchValue({productIds: [...this.tempSelectedIds()]}); this.editingBotFormForProducts()?.markAsDirty(); } this.closeProductSelector(); }
   addQuickLink() { this.quickLinks.push(this.fb.group({ label: [''], url: [''] })); }
-  removeQuickLink(i: number) { this.quickLinks.removeAt(i); }
+  removeQuickLink(i: number) { 
+    if (this.quickLinks.length > 1) { // Ensure at least one link remains
+      this.quickLinks.removeAt(i); 
+    } else {
+      this.settingsService.showToast('يجب أن يبقى رابط سريع واحد على الأقل.');
+    }
+  }
   logout() { this.authService.logout(); }
   renameCategory(old: string) { const n = prompt('الاسم الجديد:', old); if(n && n!==old) { this.productService.updateCategory(old, n);
       this.settingsService.showToast('تم تعديل التصنيف بنجاح'); }}
   deleteCategory(c: string) { if(confirm('تأكيد الحذف: هل أنت متأكد من حذف هذا التصنيف بشكل دائم؟')) { this.productService.deleteCategory(c);
       this.cdr.detectChanges(); 
       this.settingsService.showToast('تم حذف التصنيف بنجاح'); }}
-  saveNotifications() { this.settingsService.updateSettings({ notifications: this.notificationsForm.value as any }); this.settingsService.showToast('تم الحفظ'); }
-  sendVerificationCode() { const code = Math.floor(100000 + Math.random() * 900000).toString(); this.generatedCode.set(code); this.notificationService.sendVerificationCode(code); this.verificationState.set('pending'); }
-  confirmVerification() { if(this.notificationsForm.value.verificationCode === this.generatedCode()) { this.settingsService.updateSettings({ notifications: { ...this.settings().notifications, verified: true } }); this.verificationState.set('idle'); } else { this.verificationState.set('error'); } }
+  saveNotifications() { 
+    if (this.notificationsForm.invalid) {
+        this.settingsService.showToast('الرجاء تعبئة طريقة الإشعار والوجهة بشكل صحيح.');
+        this.notificationsForm.markAllAsTouched();
+        return;
+    }
+    this.settingsService.updateSettings({ notifications: this.notificationsForm.value as any }); 
+    this.settingsService.showToast('تم الحفظ'); 
+  }
+  sendVerificationCode() { 
+    const method = this.notificationsForm.value.method;
+    const destination = this.notificationsForm.value.destination;
+    if (method === 'none' || !destination) {
+        this.settingsService.showToast('الرجاء اختيار طريقة إشعار وتحديد وجهة الإشعار أولاً.');
+        return;
+    }
+
+    const code = Math.floor(100000 + Math.random() * 900000).toString(); 
+    this.generatedCode.set(code); 
+    this.notificationService.sendVerificationCode(code); 
+    this.verificationState.set('pending'); 
+    this.settingsService.showToast('تم إرسال رمز التحقق!');
+  }
+  confirmVerification() { 
+    if(this.notificationsForm.value.verificationCode === this.generatedCode()) { 
+      this.settingsService.updateSettings({ notifications: { ...this.settings().notifications, verified: true } }); 
+      this.verificationState.set('idle'); 
+      this.settingsService.showToast('تم تأكيد الربط بنجاح!');
+    } else { 
+      this.verificationState.set('error'); 
+      this.settingsService.showToast('رمز التحقق غير صحيح. حاول مرة أخرى.');
+    } 
+  }
   closeCameraPermissionHelp() { this.showCameraPermissionHelp.set(false); }
   openBluetoothHelp() { this.showBluetoothHelp.set(true); }
   closeBluetoothHelp() { this.showBluetoothHelp.set(false); }
@@ -412,37 +471,53 @@ export class AdminComponent {
   
   async createProductWithAI() {
     if (!this.geminiService.isConfigured()) {
-      alert('API Key Missing: يرجى التأكد من توفر مفتاح Gemini API.');
+      this.settingsService.showToast('API Key Missing: يرجى التأكد من توفر مفتاح Gemini API.');
       return;
     }
+    if (this.aiAssistantForm.invalid) {
+      this.settingsService.showToast('الرجاء تعبئة صورة المنتج والسعر بشكل صحيح.');
+      this.aiAssistantForm.markAllAsTouched();
+      return;
+    }
+
     this.aiAssistantState.set('processing');
     try {
         const val = this.aiAssistantForm.value;
         const details = await this.geminiService.generateProductDetailsFromImage(val.image!.split(',')[1], val.price!, this.categories());
         this.productService.addProduct({ name: details.name, price: val.price!, category: details.category, description: details.description, image: val.image!, variants: [] });
         this.aiAssistantState.set('success');
+        this.settingsService.showToast('تم إنشاء المنتج بالذكاء الاصطناعي بنجاح!');
         setTimeout(() => this.closeAIAssistant(), 1500);
     } catch (e) {
       console.error("Error creating product with AI:", e);
       this.aiAssistantError.set('حدث خطأ أثناء إنشاء المنتج بالذكاء الاصطناعي. حاول مرة أخرى.');
       this.aiAssistantState.set('error');
+      this.settingsService.showToast('فشل إنشاء المنتج بالذكاء الاصطناعي.');
     }
   }
 
   async generateLandingPageOnly() { 
       if (!this.geminiService.isConfigured()) {
-        alert('API Key Missing: يرجى التأكد من توفر مفتاح Gemini API.');
+        this.settingsService.showToast('API Key Missing: يرجى التأكد من توفر مفتاح Gemini API.');
         return;
       }
+      if (this.adForm.invalid) {
+        this.settingsService.showToast('الرجاء تعبئة اسم ووصف المنتج بشكل صحيح.');
+        this.adForm.markAllAsTouched();
+        return;
+      }
+
       this.adPageGeneratorState.set('loading');
       try {
           const val = this.adForm.value;
           const copy = await this.geminiService.generateAdCopy(val.productName!, val.productDescription!);
           this.generatedAd.set({ ...copy, features: copy.features.map(f => ({...f, image: null})) });
           this.adPageGeneratorState.set('success');
+          this.settingsService.showToast('تم توليد الإعلان بالذكاء الاصطناعي بنجاح!');
       } catch (e) {
         console.error("Error generating ad page:", e);
         this.adPageGeneratorState.set('error');
+        this.settingsService.showToast('فشل توليد الإعلان بالذكاء الاصطناعي.');
       }
   }
   
@@ -456,7 +531,7 @@ export class AdminComponent {
   async shareGeneratedAd() {
     const ad = this.generatedAd();
     if (!ad) {
-      alert('لا يوجد إعلان لتتم مشاركته.');
+      this.settingsService.showToast('لا يوجد إعلان لتتم مشاركته.');
       return;
     }
     const shareText = `إعلان جديد لـ ${ad.headline}!\n${ad.subheadline}\n\nالميزات:\n${ad.features.map(f => `- ${f.title}: ${f.description}`).join('\n')}\n\nاكتشف المزيد في متجرنا!`;
@@ -467,7 +542,7 @@ export class AdminComponent {
         this.settingsService.showToast('تم نسخ الإعلان إلى الحافظة!');
       } catch (err) {
         console.error('Failed to copy ad to clipboard:', err);
-        alert('حدث خطأ أثناء نسخ الإعلان. يرجى النسخ يدوياً.');
+        this.settingsService.showToast('حدث خطأ أثناء نسخ الإعلان. يرجى النسخ يدوياً.');
       }
     } else {
       alert('متصفحك لا يدعم النسخ التلقائي. يرجى نسخ النص يدوياً:\n\n' + shareText);
