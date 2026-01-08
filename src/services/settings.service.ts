@@ -32,7 +32,25 @@ export class SettingsService {
     offerDisplayType: 'beside-cart',
     gridColumns: 4,
     theme: 'dark',
-    storeSections: [],
+    // Added default sections with different designs as requested
+    storeSections: [
+        {
+            id: 101,
+            name: 'وصل حديثاً',
+            productCount: 4,
+            columns: 4,
+            cardShape: 'default',
+            cardAnimation: 'magnetic-tilt'
+        },
+        {
+            id: 102,
+            name: 'الأكثر مبيعاً',
+            productCount: 4,
+            columns: 2,
+            cardShape: 'circle',
+            cardAnimation: 'spotlight-focus'
+        }
+    ],
     deliveryCompanies: [
       { id: 1, name: 'ياليدين إكسبريس', fee: 600 },
       { id: 2, name: 'أخرى', fee: 700 },

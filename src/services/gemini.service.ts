@@ -1,4 +1,5 @@
 
+
 import { Injectable, signal } from '@angular/core';
 import { GoogleGenAI } from '@google/genai'; // Removed 'Type' as it's no longer needed after removing schema examples
 
@@ -11,7 +12,7 @@ export class GeminiService {
 
   constructor() {
     try {
-      this.apiKey = (process as any).env.API_KEY;
+      this.apiKey = process.env.API_KEY; // Using process.env.API_KEY as per guidelines
       if (!this.apiKey) {
         const errorMessage = 'Gemini API key is not configured. AI features will be disabled.';
         this.configurationError.set(errorMessage);

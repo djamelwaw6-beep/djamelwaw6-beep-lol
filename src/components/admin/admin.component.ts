@@ -1,5 +1,5 @@
 
-import { Component, ChangeDetectionStrategy, inject, signal, computed, ViewChild, ElementRef } from '@angular/core';
+import { Component, ChangeDetectionStrategy, inject, signal, computed, ViewChild, ElementRef, ChangeDetectorRef } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { Router, RouterLink, ActivatedRoute } from '@angular/router';
 import { FormBuilder, Validators, ReactiveFormsModule, FormArray, AbstractControl, FormControl, FormGroup } from '@angular/forms';
@@ -21,6 +21,7 @@ import { Product, Order, MarketingBot, StoreSection } from '../../models';
 export class AdminComponent {
   private router: Router = inject(Router);
   private route: ActivatedRoute = inject(ActivatedRoute);
+  private cdr: ChangeDetectorRef = inject(ChangeDetectorRef);
   settingsService = inject(SettingsService);
   productService = inject(ProductService);
   private fb: FormBuilder = inject(FormBuilder);
@@ -46,12 +47,10 @@ export class AdminComponent {
 
   // --- AI Assistant ---
   isAIAssistantOpen = signal(false);
-  // Removed 'generate-video', 'research', 'edit-image' modes
   aiMode = signal<'create-product' | 'generate-page'>('create-product');
   aiAssistantState = signal<'idle' | 'processing' | 'success' | 'error'>('idle');
   aiAssistantError = signal<string | null>(null);
   
-  // AI Forms
   aiAssistantForm = this.fb.group({
     image: ['', Validators.required],
     price: [null as number | null, [Validators.required, Validators.min(0)]],
@@ -63,15 +62,8 @@ export class AdminComponent {
     productDescription: ['', Validators.required]
   });
 
-  // AI Feature States
   adPageGeneratorState = signal<'idle' | 'loading' | 'success' | 'error'>('idle');
-  
-  // Removed Veo Video Generation related signals and forms
-  // Removed Ad Generation generatedAd, still used by HTML for display
   generatedAd = signal<{ headline: string; subheadline: string; features: any[] } | null>(null);
-  
-  // Removed Search Grounding related signals and forms
-  // Removed Image Editing (Nano Banana) related signals and forms
 
   // --- Main Forms ---
   settingsForm = this.fb.group({
@@ -86,12 +78,10 @@ export class AdminComponent {
     bgColor: ['#0f172a'],
     heroAnimation: ['slide'],
     
-    // VISUAL CUSTOMIZATION CONTROLS
     logoEffect: ['none'],
     logoShape: ['default'],
     cardBgColor: ['#ffffff'],
     cardTextColor: ['#1e293b'],
-    // Removed cardBorderRadius manually
     cardShadow: ['0 10px 15px -3px rgb(0 0 0 / 0.1)'], 
     cardAnimation: ['magnetic-tilt'],
     cardAnimationSpeed: [20],
@@ -302,10 +292,20 @@ export class AdminComponent {
 
   deleteProduct(event: Event, id: number) {
     event.stopPropagation();
-    if (confirm('هل أنت متأكد من حذف هذا المنتج؟')) {
-        this.productService.deleteProduct(id);
+    if (confirm('تأكيد الحذف: هل أنت متأكد من حذف هذا المنتج بشكل دائم؟')) {
+        // Ensure ID is a number to match strict equality check in service
+        this.productService.deleteProduct(Number(id));
+        this.cdr.detectChanges(); // Ensure UI updates
         this.settingsService.showToast('تم حذف المنتج بنجاح');
     }
+  }
+  
+  resetProducts() {
+      if(confirm('هل أنت متأكد؟ سيتم حذف جميع المنتجات الحالية واستعادة القائمة الافتراضية (20 منتج).')) {
+          this.productService.resetToDefaults();
+          this.cdr.detectChanges();
+          this.settingsService.showToast('تم استعادة المنتجات الافتراضية');
+      }
   }
 
   cancelProductEdit() { this.isEditingProduct.set(false); this.editingProductId.set(null); this.productForm.reset(); this.variants.clear(); }
@@ -315,8 +315,9 @@ export class AdminComponent {
   downloadOrder(order: Order) { const blob = new Blob([`Order #${order.id}\n${order.customer.name}\n${order.total}`], {type: 'text/plain'}); const a = document.createElement('a'); a.href = URL.createObjectURL(blob); a.download = 'order.txt'; a.click(); }
   deleteOrder(e: Event, order: Order) { 
     e.stopPropagation(); 
-    if (confirm('هل أنت متأكد من حذف هذا الطلب؟')) { 
+    if (confirm('تأكيد الحذف: هل أنت متأكد من حذف هذا الطلب بشكل دائم؟')) { 
       this.orderService.deleteOrder(order.id!); 
+      this.cdr.detectChanges(); 
       this.settingsService.showToast('تم حذف الطلب بنجاح'); 
     } 
   }
@@ -334,8 +335,9 @@ export class AdminComponent {
   }
   editSection(s: StoreSection) { this.isEditingSection.set(true); this.editingSectionId.set(s.id); this.sectionForm.patchValue(s); }
   deleteSection(id: number) { 
-    if (confirm('هل أنت متأكد من حذف هذا القسم؟')) { 
-      this.settingsService.deleteStoreSection(id); 
+    if (confirm('تأكيد الحذف: هل أنت متأكد من حذف هذا القسم بشكل دائم؟')) { 
+      this.settingsService.deleteStoreSection(Number(id)); 
+      this.cdr.detectChanges(); 
       this.settingsService.showToast('تم حذف القسم بنجاح'); 
     } 
   }
@@ -353,8 +355,9 @@ export class AdminComponent {
   }
   editCompany(c: any) { this.isEditingDelivery.set(true); this.editingDeliveryId.set(c.id); this.deliveryForm.patchValue(c); }
   deleteCompany(id: number) { 
-    if (confirm('هل أنت متأكد من حذف شركة التوصيل هذه؟')) { 
-      this.settingsService.deleteDeliveryCompany(id); 
+    if (confirm('تأكيد الحذف: هل أنت متأكد من حذف شركة التوصيل هذه بشكل دائم؟')) { 
+      this.settingsService.deleteDeliveryCompany(Number(id)); 
+      this.cdr.detectChanges(); 
       this.settingsService.showToast('تم حذف شركة التوصيل بنجاح'); 
     } 
   }
@@ -373,8 +376,9 @@ export class AdminComponent {
     this.cancelBotEdit(); 
   }
   deleteBot(id: string) { 
-    if (confirm('هل أنت متأكد من حذف هذا الروبوت التسويقي؟')) { 
+    if (confirm('تأكيد الحذف: هل أنت متأكد من حذف هذا الروبوت التسويقي بشكل دائم؟')) { 
       this.settingsService.deleteMarketingBot(id); 
+      this.cdr.detectChanges(); 
       this.settingsService.showToast('تم حذف الروبوت التسويقي بنجاح'); 
     } 
   }
@@ -388,8 +392,11 @@ export class AdminComponent {
   addQuickLink() { this.quickLinks.push(this.fb.group({ label: [''], url: [''] })); }
   removeQuickLink(i: number) { this.quickLinks.removeAt(i); }
   logout() { this.authService.logout(); }
-  renameCategory(old: string) { const n = prompt('الاسم الجديد:', old); if(n && n!==old) { this.productService.updateCategory(old, n); this.settingsService.showToast('تم تعديل التصنيف بنجاح'); }}
-  deleteCategory(c: string) { if(confirm('هل أنت متأكد من حذف هذا التصنيف؟')) { this.productService.deleteCategory(c); this.settingsService.showToast('تم حذف التصنيف بنجاح'); }}
+  renameCategory(old: string) { const n = prompt('الاسم الجديد:', old); if(n && n!==old) { this.productService.updateCategory(old, n);
+      this.settingsService.showToast('تم تعديل التصنيف بنجاح'); }}
+  deleteCategory(c: string) { if(confirm('تأكيد الحذف: هل أنت متأكد من حذف هذا التصنيف بشكل دائم؟')) { this.productService.deleteCategory(c);
+      this.cdr.detectChanges(); 
+      this.settingsService.showToast('تم حذف التصنيف بنجاح'); }}
   saveNotifications() { this.settingsService.updateSettings({ notifications: this.notificationsForm.value as any }); this.settingsService.showToast('تم الحفظ'); }
   sendVerificationCode() { const code = Math.floor(100000 + Math.random() * 900000).toString(); this.generatedCode.set(code); this.notificationService.sendVerificationCode(code); this.verificationState.set('pending'); }
   confirmVerification() { if(this.notificationsForm.value.verificationCode === this.generatedCode()) { this.settingsService.updateSettings({ notifications: { ...this.settings().notifications, verified: true } }); this.verificationState.set('idle'); } else { this.verificationState.set('error'); } }
@@ -401,7 +408,6 @@ export class AdminComponent {
   // --- AI Actions ---
   openAIAssistant() { this.isAIAssistantOpen.set(true); this.aiAssistantState.set('idle'); }
   closeAIAssistant() { this.isAIAssistantOpen.set(false); }
-  // Only allow create-product and generate-page modes
   switchAIMode(mode: 'create-product' | 'generate-page') { this.aiMode.set(mode); }
   
   async createProductWithAI() {
@@ -432,8 +438,6 @@ export class AdminComponent {
       try {
           const val = this.adForm.value;
           const copy = await this.geminiService.generateAdCopy(val.productName!, val.productDescription!);
-          // The image prompt generation is not directly used here for features
-          // Assuming features will be rendered without individual images from AI for simplicity as per request
           this.generatedAd.set({ ...copy, features: copy.features.map(f => ({...f, image: null})) });
           this.adPageGeneratorState.set('success');
       } catch (e) {
@@ -441,11 +445,7 @@ export class AdminComponent {
         this.adPageGeneratorState.set('error');
       }
   }
-
-  // Removed generateVideoStandalone method
-  // Removed performResearch method
-  // Removed performImageEdit method
-
+  
   populateAdForm(event: Event, p: Product) { 
     event.stopPropagation();
     this.adForm.patchValue({productName: p.name, productDescription: p.description}); 
@@ -473,6 +473,4 @@ export class AdminComponent {
       alert('متصفحك لا يدعم النسخ التلقائي. يرجى نسخ النص يدوياً:\n\n' + shareText);
     }
   }
-  // Removed downloadVideo method
-  // Removed downloadEditedImage method
 }
