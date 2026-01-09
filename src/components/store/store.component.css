@@ -1,4 +1,28 @@
 
+:host {
+  /* Dynamic CSS variables for background */
+  --bg-image: none;
+  --bg-color: #0f172a;
+  --bg-overlay-color: #000000;
+  --bg-overlay-opacity: 0.3;
+}
+
+.fixed.inset-0.z-[-1] {
+  background-image: var(--bg-image);
+  background-color: var(--bg-color);
+  background-size: cover;
+  background-attachment: fixed;
+  background-position: center;
+}
+
+.fixed.inset-0.z-[-1]::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background-color: var(--bg-overlay-color);
+  opacity: var(--bg-overlay-opacity);
+}
+
 body.grabbing-active {
   cursor: grabbing;
   -webkit-user-select: none;
@@ -114,6 +138,17 @@ body.grabbing-active {
 .card-animate-floating-elements { transition: transform 0.2s ease-out; transform-style: preserve-3d; }
 .card-animate-floating-elements img { transition: transform 0.4s ease-out; transform: translateZ(30px); }
 
+/* NEW: Staggered Pop Animation (for products) */
+@keyframes staggered-pop-in {
+  0% { opacity: 0; transform: translateY(20px) scale(0.9); }
+  100% { opacity: 1; transform: translateY(0) scale(1); }
+}
+.card-animate-staggered-pop {
+  animation: staggered-pop-in 0.5s cubic-bezier(0.175, 0.885, 0.32, 1.275) forwards;
+  opacity: 0; /* Hidden by default, then revealed by animation */
+}
+
+
 /* --- OTHER UI --- */
 .offer-banner { background: linear-gradient(90deg, #ff00cc, #333399); color: white; padding: 0.5rem 1rem; border-radius: 0.5rem; cursor: pointer; transition: transform 0.2s; box-shadow: 0 4px 15px rgba(255, 0, 204, 0.4); animation: pulse 2s infinite; }
 .offer-banner:hover { transform: scale(1.02); }
@@ -124,3 +159,70 @@ body.grabbing-active {
 .greet-icon { animation: pulse 2s infinite; }
 .showcase-details-card { backdrop-filter: blur(20px); }
 .font-heading { font-family: 'Cairo', sans-serif; }
+
+
+/* --- CINEMA SHOWCASE MODE ANIMATIONS --- */
+@keyframes zoom {
+  0% { transform: scale(1); }
+  100% { transform: scale(1.1); }
+}
+.animate-\[zoom_8s_ease-in-out_forwards\] {
+  animation: zoom 8s ease-in-out forwards;
+}
+
+@keyframes pan-left-slow {
+  0% { transform: translateX(0) scale(1.05); }
+  100% { transform: translateX(-5%) scale(1.1); }
+}
+.animate-\[pan-left-slow_8s_ease-in-out_forwards\] {
+  animation: pan-left-slow 8s ease-in-out forwards;
+}
+
+@keyframes pan-right-slow {
+  0% { transform: translateX(0) scale(1.05); }
+  100% { transform: translateX(5%) scale(1.1); }
+}
+.animate-\[pan-right-slow_8s_ease-in-out_forwards\] {
+  animation: pan-right-slow 8s ease-in-out forwards;
+}
+
+@keyframes fade-zoom-out {
+  0% { opacity: 0.8; transform: scale(1.1); }
+  100% { opacity: 1; transform: scale(1); }
+}
+.animate-\[fade-zoom-out_8s_ease-in-out_forwards\] {
+  animation: fade-zoom-out 8s ease-in-out forwards;
+}
+
+@keyframes slide-up-slow {
+  0% { transform: translateY(0) scale(1); }
+  100% { transform: translateY(-5%) scale(1.05); }
+}
+.animate-\[slide-up-slow_8s_ease-in-out_forwards\] {
+  animation: slide-up-slow 8s ease-in-out forwards;
+}
+
+@keyframes rotate-zoom {
+  0% { transform: scale(1) rotate(0deg); }
+  50% { transform: scale(1.1) rotate(2deg); }
+  100% { transform: scale(1.05) rotate(-2deg); }
+}
+.animate-\[rotate-zoom_8s_ease-in-out_forwards\] {
+  animation: rotate-zoom 8s ease-in-out forwards;
+}
+
+@keyframes zoom-fade {
+  0% { opacity: 0; transform: scale(0.9); }
+  100% { opacity: 1; transform: scale(1); }
+}
+.animate-zoom-fade {
+  animation: zoom-fade 0.5s cubic-bezier(0.25, 1, 0.5, 1) forwards;
+}
+
+@keyframes slide-up {
+  from { opacity: 0; transform: translateY(100%); }
+  to { opacity: 1; transform: translateY(0); }
+}
+.animate-slide-up {
+  animation: slide-up 0.4s ease-out forwards;
+}

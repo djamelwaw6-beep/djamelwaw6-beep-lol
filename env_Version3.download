@@ -1,4 +1,0 @@
-# Local env file (not used directly by browser builds)
-# ضع مفتاحك هنا للاحتفاظ محليًا، لكن تذكر: الواجهة تقرأ المفتاح من meta في index.html أو من window.__PLATINUM__
-# لا ترفع هذا الملف إلى مستودع عام
-GEMINI_API_KEY=PLACEHOLDER_API_KEYAIzaSyDvGHPB60skBuNgKNoYSjyu2p230uXwiyo

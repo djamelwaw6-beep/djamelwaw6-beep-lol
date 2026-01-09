@@ -64,12 +64,12 @@
             <h1 class="text-xl font-bold text-slate-800 dark:text-slate-200">{{ getActiveTabName() }}</h1>
         </div>
         <div class="flex items-center gap-2">
-            <button (click)="openAIAssistant()" title="المساعد الذكي"
+            <button type="button" (click)="openAIAssistant()" title="المساعد الذكي"
                     class="flex items-center gap-2 px-3 py-2 rounded-lg bg-gradient-to-r from-blue-500 to-indigo-600 text-white font-bold hover:scale-105 transition-transform shadow-lg">
                 <i class="fa-solid fa-wand-magic-sparkles"></i>
                 <span class="hidden sm:inline text-sm">المساعد الذكي</span>
             </button>
-            <button (click)="activeTab.set('marketing')" title="المسوق الذكي"
+            <button type="button" (click)="activeTab.set('marketing')" title="المسوق الذكي"
                     class="flex items-center gap-2 px-3 py-2 rounded-lg bg-gradient-to-r from-pink-500 to-orange-500 text-white font-bold hover:scale-105 transition-transform shadow-lg">
                 <i class="fa-solid fa-robot"></i>
                 <span class="hidden sm:inline text-sm">المسوق الذكي</span>
@@ -97,8 +97,7 @@
 @if(isAIAssistantOpen()) {
   <div class="fixed inset-0 z-[120] bg-black/80 backdrop-blur-sm flex items-center justify-center p-4 animate-fade-in" (click)="closeAIAssistant()">
     <div class="w-full max-w-4xl bg-white dark:bg-slate-800 rounded-3xl shadow-2xl overflow-hidden flex flex-col relative max-h-[90vh]" (click)="$event.stopPropagation()">
-        
-        <!-- Header -->
+        <!-- Header, Tabs, Body for AI similar to before -->
         <div class="p-4 bg-gradient-to-r from-blue-600 to-indigo-600 text-white flex justify-between items-center flex-shrink-0">
             <div class="flex items-center gap-3">
                 <div class="w-10 h-10 rounded-full bg-white/20 flex items-center justify-center text-xl backdrop-blur-md">
@@ -109,31 +108,20 @@
                     <p class="text-xs text-blue-100 opacity-90">تحليل، توليد، وبحث ذكي</p>
                 </div>
             </div>
-            <button (click)="closeAIAssistant()" class="text-white hover:bg-white/20 w-8 h-8 rounded-full flex items-center justify-center transition">
+            <button type="button" (click)="closeAIAssistant()" class="text-white hover:bg-white/20 w-8 h-8 rounded-full flex items-center justify-center transition">
                 <i class="fa-solid fa-times"></i>
             </button>
         </div>
 
-        <!-- Tabs -->
         <div class="flex border-b border-slate-200 dark:border-slate-700 bg-slate-50 dark:bg-slate-900/50 flex-shrink-0 overflow-x-auto">
-            <button (click)="switchAIMode('create-product')" class="flex-1 min-w-[120px] py-3 text-sm font-bold transition flex items-center justify-center gap-2 whitespace-nowrap" [class.text-blue-600]="aiMode() === 'create-product'" [class.border-b-2]="aiMode() === 'create-product'" [class.border-blue-600]="aiMode() === 'create-product'">
+            <button type="button" (click)="switchAIMode('create-product')" class="flex-1 min-w-[120px] py-3 text-sm font-bold transition flex items-center justify-center gap-2 whitespace-nowrap" [class.text-blue-600]="aiMode() === 'create-product'" [class.border-b-2]="aiMode() === 'create-product'" [class.border-blue-600]="aiMode() === 'create-product'">
                 <i class="fa-solid fa-box-open"></i> إنشاء منتج
             </button>
-            <button (click)="switchAIMode('generate-page')" class="flex-1 min-w-[120px] py-3 text-sm font-bold transition flex items-center justify-center gap-2 whitespace-nowrap" [class.text-blue-600]="aiMode() === 'generate-page'" [class.border-b-2]="aiMode() === 'generate-page'" [class.border-blue-600]="aiMode() === 'generate-page'">
+            <button type="button" (click)="switchAIMode('generate-page')" class="flex-1 min-w-[120px] py-3 text-sm font-bold transition flex items-center justify-center gap-2 whitespace-nowrap" [class.text-blue-600]="aiMode() === 'generate-page'" [class.border-b-2]="aiMode() === 'generate-page'" [class.border-blue-600]="aiMode() === 'generate-page'">
                 <i class="fa-solid fa-file-invoice"></i> إعلانات
-            </button>
-             <button (click)="switchAIMode('generate-video')" class="flex-1 min-w-[120px] py-3 text-sm font-bold transition flex items-center justify-center gap-2 whitespace-nowrap" [class.text-blue-600]="aiMode() === 'generate-video'" [class.border-b-2]="aiMode() === 'generate-video'" [class.border-blue-600]="aiMode() === 'generate-video'">
-                <i class="fa-solid fa-video"></i> فيديو Veo
-            </button>
-            <button (click)="switchAIMode('research')" class="flex-1 min-w-[120px] py-3 text-sm font-bold transition flex items-center justify-center gap-2 whitespace-nowrap" [class.text-blue-600]="aiMode() === 'research'" [class.border-b-2]="aiMode() === 'research'" [class.border-blue-600]="aiMode() === 'research'">
-                <i class="fa-brands fa-google"></i> بحث وترايند
-            </button>
-            <button (click)="switchAIMode('edit-image')" class="flex-1 min-w-[120px] py-3 text-sm font-bold transition flex items-center justify-center gap-2 whitespace-nowrap" [class.text-blue-600]="aiMode() === 'edit-image'" [class.border-b-2]="aiMode() === 'edit-image'" [class.border-blue-600]="aiMode() === 'edit-image'">
-                <i class="fa-solid fa-wand-sparkles"></i> تعديل (Nano)
             </button>
         </div>
 
-        <!-- Body -->
         <div class="p-6 overflow-y-auto flex-1 custom-scrollbar">
             @switch (aiMode()) {
                 @case ('create-product') {
@@ -145,7 +133,7 @@
                                     @if (aiAssistantForm.get('image')?.value) {
                                         <div class="relative group h-40 w-full rounded-xl overflow-hidden border-2 border-blue-500">
                                             <img [src]="aiAssistantForm.get('image')?.value" class="w-full h-full object-cover">
-                                            <button (click)="aiAssistantForm.patchValue({image: ''})" class="absolute top-2 right-2 bg-red-500 text-white w-8 h-8 rounded-full flex items-center justify-center shadow-lg hover:bg-red-600 transition">
+                                            <button type="button" (click)="aiAssistantForm.patchValue({image: ''})" class="absolute top-2 right-2 bg-red-500 text-white w-8 h-8 rounded-full flex items-center justify-center shadow-lg hover:bg-red-600 transition">
                                                 <i class="fa-solid fa-trash"></i>
                                             </button>
                                         </div>
@@ -158,7 +146,7 @@
                                             <label class="h-32 border-2 border-dashed border-slate-300 dark:border-slate-600 rounded-xl flex flex-col items-center justify-center text-slate-500 hover:border-blue-500 hover:text-blue-500 hover:bg-blue-50 dark:hover:bg-slate-700 transition gap-2 cursor-pointer">
                                                 <i class="fa-solid fa-upload text-2xl"></i>
                                                 <span class="text-sm font-bold">رفع صورة</span>
-                                                <input type="file" class="hidden" (change)="handleFileInputChange($any($event.target), aiAssistantForm.controls.image, 'aiInput', true)">
+                                                <input type="file" class="hidden" (change)="handleFileInputChange($any($event.target), aiAssistantForm.controls['image'], 'aiInput')">
                                             </label>
                                         </div>
                                     }
@@ -170,7 +158,7 @@
                                         <span class="absolute left-3 top-1/2 -translate-y-1/2 text-slate-400 text-xs font-bold">DZD</span>
                                     </div>
                                 </div>
-                                <button (click)="createProductWithAI()" [disabled]="aiAssistantForm.invalid" class="w-full py-4 bg-blue-600 text-white rounded-xl font-bold text-lg hover:bg-blue-700 transition shadow-lg disabled:opacity-50 flex items-center justify-center gap-2">
+                                <button type="button" (click)="createProductWithAI()" [disabled]="aiAssistantForm.invalid" class="w-full py-4 bg-blue-600 text-white rounded-xl font-bold text-lg hover:bg-blue-700 transition shadow-lg disabled:opacity-50 flex items-center justify-center gap-2">
                                     <i class="fa-solid fa-wand-magic-sparkles"></i>
                                     <span>تحليل ونشر المنتج</span>
                                 </button>
@@ -188,11 +176,11 @@
                                 <h4 class="text-xl font-bold text-slate-800 dark:text-white mb-2">تم النشر بنجاح!</h4>
                             </div>
                         }
-                        @case ('error') { <div class="text-center text-red-500 p-4">حدث خطأ. حاول مرة أخرى.</div> }
+                        @case ('error') { <div class="text-center text-red-500 p-4">{{ aiAssistantError() }}</div> }
                     }
                 }
                 @case ('generate-page') {
-                    @if (adPageGeneratorState() === 'idle') {
+                     @if (adPageGeneratorState() === 'idle') {
                         <form [formGroup]="adForm" class="space-y-5">
                             <button type="button" (click)="openProductSelectorForAd()" class="w-full py-3 bg-slate-100 dark:bg-slate-700 text-slate-600 dark:text-slate-300 rounded-xl font-bold border-2 border-dashed border-slate-300 dark:border-slate-600 hover:border-blue-500 dark:hover:border-blue-500 transition flex items-center justify-center gap-2">
                                 <i class="fa-solid fa-box-open"></i>
@@ -206,7 +194,7 @@
                                 <label class="block text-sm font-bold text-slate-700 dark:text-slate-300 mb-2">وصف المنتج</label>
                                 <textarea formControlName="productDescription" rows="4" placeholder="المميزات الرئيسية..." class="w-full p-3 border bg-slate-50 dark:bg-slate-700 border-slate-300 dark:border-slate-600 rounded-xl focus:border-blue-500 outline-none transition text-slate-800 dark:text-white text-sm resize-none"></textarea>
                             </div>
-                            <button (click)="generateLandingPageOnly()" [disabled]="adForm.invalid" class="w-full py-4 bg-gradient-to-r from-purple-600 to-pink-600 text-white rounded-xl font-bold text-lg hover:shadow-lg hover:scale-[1.02] transition flex items-center justify-center gap-2">
+                            <button type="button" (click)="generateLandingPageOnly()" [disabled]="adForm.invalid" class="w-full py-4 bg-gradient-to-r from-purple-600 to-pink-600 text-white rounded-xl font-bold text-lg hover:shadow-lg hover:scale-[1.02] transition flex items-center justify-center gap-2">
                                 <i class="fa-solid fa-file-invoice"></i>
                                 <span>توليد صفحة الهبوط (نصوص وصور)</span>
                             </button>
@@ -229,8 +217,7 @@
                                     @for (feature of generatedAd()!.features; track $index) {
                                         <div class="bg-slate-50 dark:bg-slate-800 p-3 rounded-xl">
                                             <div class="h-24 bg-slate-200 dark:bg-slate-700 rounded-lg mb-2 overflow-hidden relative">
-                                                @if(feature.image) { <img [src]="feature.image" class="w-full h-full object-cover"> }
-                                                @else { <div class="flex items-center justify-center h-full text-slate-400"><i class="fa-solid fa-image"></i></div> }
+                                                <div class="flex items-center justify-center h-full text-slate-400"><i class="fa-solid fa-image"></i></div>
                                             </div>
                                             <h5 class="font-bold text-sm text-slate-800 dark:text-white">{{ feature.title }}</h5>
                                             <p class="text-xs text-slate-500 dark:text-slate-400">{{ feature.description }}</p>
@@ -238,137 +225,16 @@
                                     }
                                 </div>
                             </div>
-                            <button (click)="adPageGeneratorState.set('idle')" class="w-full py-3 bg-slate-200 dark:bg-slate-700 font-bold rounded-xl">جديد</button>
+                            <div class="flex gap-4 mt-6">
+                                <button type="button" (click)="shareGeneratedAd()" class="flex-1 py-3 bg-blue-600 text-white font-bold rounded-xl hover:bg-blue-700 transition">
+                                    <i class="fa-solid fa-share-alt ml-2"></i> مشاركة الإعلان
+                                </button>
+                                <button type="button" (click)="adPageGeneratorState.set('idle')" class="flex-1 py-3 bg-slate-200 dark:bg-slate-700 font-bold rounded-xl hover:bg-slate-300 dark:hover:bg-slate-600 transition">
+                                    إعلان جديد
+                                </button>
+                            </div>
                         </div>
                     } @else { <div class="text-center text-red-500 p-4">حدث خطأ.</div> }
-                }
-                @case ('generate-video') {
-                     @if (videoGeneratorState() === 'idle') {
-                        <form [formGroup]="videoForm" class="space-y-5">
-                             <div class="bg-indigo-50 dark:bg-indigo-900/20 p-4 rounded-xl border border-indigo-200 dark:border-indigo-800 mb-4">
-                                <p class="text-sm text-indigo-800 dark:text-indigo-200 flex items-center gap-2">
-                                    <i class="fa-solid fa-circle-info"></i>
-                                    <span>جديد: Veo 3.1 - حول صورتك إلى فيديو سينمائي!</span>
-                                </p>
-                            </div>
-                            
-                            <div>
-                                <label class="block text-sm font-bold text-slate-700 dark:text-slate-300 mb-2">صورة مرجعية (اختياري)</label>
-                                <div class="flex gap-2">
-                                    @if(videoForm.get('image')?.value) {
-                                        <img [src]="videoForm.get('image')?.value" class="w-20 h-20 rounded-lg object-cover border border-slate-300">
-                                        <button type="button" (click)="videoForm.patchValue({image: ''})" class="text-red-500"><i class="fa-solid fa-trash"></i></button>
-                                    } @else {
-                                        <label class="h-20 w-full border-2 border-dashed border-slate-300 dark:border-slate-600 rounded-xl flex items-center justify-center text-slate-500 cursor-pointer hover:bg-slate-50 dark:hover:bg-slate-800">
-                                            <span class="text-xs">اضغط لرفع صورة</span>
-                                            <input type="file" class="hidden" (change)="handleFileInputChange($any($event.target), videoForm.controls.image, 'veoInput')">
-                                        </label>
-                                    }
-                                </div>
-                            </div>
-
-                            <div>
-                                <label class="block text-sm font-bold text-slate-700 dark:text-slate-300 mb-2">سيناريو الفيديو</label>
-                                <textarea formControlName="prompt" rows="4" placeholder="وصف المشهد والحركة..." class="w-full p-3 border bg-slate-50 dark:bg-slate-700 border-slate-300 dark:border-slate-600 rounded-xl focus:border-blue-500 outline-none transition text-slate-800 dark:text-white text-sm resize-none"></textarea>
-                            </div>
-                            <button (click)="generateVideoStandalone()" [disabled]="videoForm.invalid" class="w-full py-4 bg-indigo-600 text-white rounded-xl font-bold text-lg hover:shadow-lg hover:bg-indigo-700 transition flex items-center justify-center gap-2">
-                                <i class="fa-solid fa-video"></i>
-                                <span>توليد فيديو Veo</span>
-                            </button>
-                        </form>
-                    } @else if (videoGeneratorState() === 'loading') {
-                        <div class="py-12 flex flex-col items-center justify-center text-center space-y-6">
-                            <div class="w-16 h-16 rounded-full border-4 border-indigo-500 border-t-transparent animate-spin"></div>
-                            <h4 class="text-xl font-bold text-slate-800 dark:text-white mb-2">جاري إنتاج الفيديو...</h4>
-                        </div>
-                    } @else if (videoGeneratorState() === 'success' && standaloneVideoUrl()) {
-                        <div class="animate-fade-in space-y-6">
-                            <div class="bg-black rounded-2xl overflow-hidden aspect-video shadow-2xl relative group">
-                                <video [src]="standaloneVideoUrl()" controls autoplay loop class="w-full h-full object-contain"></video>
-                            </div>
-                            <button (click)="downloadVideo()" class="w-full py-3 bg-blue-600 text-white font-bold rounded-xl"><i class="fa-solid fa-download"></i> تحميل</button>
-                            <button (click)="videoGeneratorState.set('idle')" class="w-full py-3 bg-slate-200 dark:bg-slate-700 font-bold rounded-xl">جديد</button>
-                        </div>
-                    } @else { 
-                        <div class="text-center p-4">
-                            <p class="text-red-500 mb-2">{{ videoErrorMsg() }}</p>
-                            <button (click)="videoGeneratorState.set('idle')" class="px-4 py-2 bg-slate-200 rounded-lg">إعادة المحاولة</button>
-                        </div>
-                    }
-                }
-                @case ('research') {
-                    <div class="space-y-4 h-full flex flex-col">
-                        <div class="flex gap-2">
-                            <input [formControl]="researchQuery" placeholder="ابحث عن أحدث الترندات (مثال: ألوان الحقائب 2024)" class="flex-1 p-3 border bg-slate-50 dark:bg-slate-700 border-slate-300 dark:border-slate-600 rounded-xl focus:border-blue-500 outline-none transition text-slate-800 dark:text-white">
-                            <button (click)="performResearch()" class="px-6 bg-blue-600 text-white rounded-xl font-bold hover:bg-blue-700">بحث</button>
-                        </div>
-                        
-                        @if(researchState() === 'loading') {
-                            <div class="flex-1 flex items-center justify-center"><div class="w-10 h-10 border-4 border-blue-500 border-t-transparent rounded-full animate-spin"></div></div>
-                        } @else if (researchState() === 'success' && researchResult()) {
-                            <div class="flex-1 overflow-y-auto bg-slate-50 dark:bg-slate-700/30 p-4 rounded-xl border border-slate-200 dark:border-slate-700">
-                                <div class="prose dark:prose-invert max-w-none">
-                                    <p class="whitespace-pre-wrap text-slate-800 dark:text-slate-200">{{ researchResult()?.text }}</p>
-                                </div>
-                                @if(researchResult()?.sources?.length) {
-                                    <div class="mt-4 pt-4 border-t border-slate-200 dark:border-slate-600">
-                                        <h5 class="text-xs font-bold text-slate-500 uppercase mb-2">المصادر:</h5>
-                                        <div class="flex flex-wrap gap-2">
-                                            @for(source of researchResult()?.sources; track $index) {
-                                                <a [href]="source.uri" target="_blank" class="text-xs bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-600 px-2 py-1 rounded-md hover:text-blue-500 truncate max-w-[200px]">{{ source.title }}</a>
-                                            }
-                                        </div>
-                                    </div>
-                                }
-                            </div>
-                        }
-                    </div>
-                }
-                @case ('edit-image') {
-                    @if(imageEditState() === 'idle') {
-                        <form [formGroup]="imageEditForm" class="space-y-5">
-                            <div>
-                                <label class="block text-sm font-bold text-slate-700 dark:text-slate-300 mb-2">الصورة الأصلية</label>
-                                @if (imageEditForm.get('originalImage')?.value) {
-                                    <div class="relative h-48 w-full rounded-xl overflow-hidden border border-slate-300">
-                                        <img [src]="imageEditForm.get('originalImage')?.value" class="w-full h-full object-contain bg-slate-100 dark:bg-slate-900">
-                                        <button type="button" (click)="imageEditForm.patchValue({originalImage: ''})" class="absolute top-2 right-2 bg-red-500 text-white w-8 h-8 rounded-full flex items-center justify-center"><i class="fa-solid fa-trash"></i></button>
-                                    </div>
-                                } @else {
-                                    <label class="h-48 w-full border-2 border-dashed border-slate-300 dark:border-slate-600 rounded-xl flex flex-col items-center justify-center text-slate-500 cursor-pointer hover:bg-slate-50 dark:hover:bg-slate-800 gap-2">
-                                        <i class="fa-solid fa-image text-3xl"></i>
-                                        <span>اضغط لرفع الصورة</span>
-                                        <input type="file" class="hidden" (change)="handleFileInputChange($any($event.target), imageEditForm.controls.originalImage, 'editInput')">
-                                    </label>
-                                }
-                            </div>
-                            <div>
-                                <label class="block text-sm font-bold text-slate-700 dark:text-slate-300 mb-2">الأمر (Prompt)</label>
-                                <input formControlName="prompt" placeholder="مثال: أضف خلفية ثلجية، اجعل الألوان ريترو..." class="w-full p-3 border bg-slate-50 dark:bg-slate-700 border-slate-300 dark:border-slate-600 rounded-xl focus:border-blue-500 outline-none transition text-slate-800 dark:text-white">
-                            </div>
-                            <button (click)="performImageEdit()" [disabled]="imageEditForm.invalid" class="w-full py-4 bg-pink-600 text-white rounded-xl font-bold hover:bg-pink-700 transition">
-                                <i class="fa-solid fa-wand-magic"></i> تطبيق التعديل
-                            </button>
-                        </form>
-                    } @else if (imageEditState() === 'loading') {
-                        <div class="py-12 flex flex-col items-center justify-center text-center space-y-6">
-                            <div class="w-16 h-16 rounded-full border-4 border-pink-500 border-t-transparent animate-spin"></div>
-                            <h4 class="text-xl font-bold text-slate-800 dark:text-white mb-2">جاري المعالجة (Nano Banana)...</h4>
-                        </div>
-                    } @else if (imageEditState() === 'success' && editedImageUrl()) {
-                        <div class="space-y-4">
-                            <div class="bg-slate-900 rounded-xl overflow-hidden aspect-square border border-slate-700">
-                                <img [src]="editedImageUrl()" class="w-full h-full object-contain">
-                            </div>
-                            <button (click)="downloadEditedImage()" class="w-full py-3 bg-blue-600 text-white font-bold rounded-xl">تحميل الصورة</button>
-                            <button (click)="imageEditState.set('idle')" class="w-full py-3 bg-slate-200 dark:bg-slate-700 font-bold rounded-xl">صورة أخرى</button>
-                        </div>
-                    } @else {
-                        <div class="text-center p-4">
-                            <p class="text-red-500 mb-2">فشلت عملية التعديل.</p>
-                            <button (click)="imageEditState.set('idle')" class="px-4 py-2 bg-slate-200 rounded-lg">إعادة المحاولة</button>
-                        </div>
-                    }
                 }
             }
         </div>
@@ -384,8 +250,8 @@
       <video #videoPlayer autoplay playsinline class="w-full rounded-lg bg-slate-800 mb-4 h-96 object-cover"></video>
       <canvas #photoCanvas class="hidden"></canvas>
       <div class="flex gap-2 justify-center">
-        <button (click)="captureImage()" class="px-6 py-3 rounded-lg bg-blue-600 text-white font-bold hover:bg-blue-700">التقاط</button>
-        <button (click)="closeCamera()" class="px-6 py-3 rounded-lg bg-slate-200 dark:bg-slate-600 font-bold hover:bg-slate-300">إلغاء</button>
+        <button type="button" (click)="captureImage()" class="px-6 py-3 rounded-lg bg-blue-600 text-white font-bold hover:bg-blue-700">التقاط</button>
+        <button type="button" (click)="closeCamera()" class="px-6 py-3 rounded-lg bg-slate-200 dark:bg-slate-600 font-bold hover:bg-slate-300">إلغاء</button>
       </div>
     </div>
   </div>
@@ -399,7 +265,7 @@
         <h2 class="text-xl font-bold text-slate-800 dark:text-slate-200">
              @if(isSelectingForAd()) { اختر منتجاً لتوليد الإعلان } @else { اختر منتجات العرض }
         </h2>
-        <button (click)="closeProductSelector()" class="w-10 h-10 bg-slate-100 dark:bg-slate-700 rounded-lg">&times;</button>
+        <button type="button" (click)="closeProductSelector()" class="w-10 h-10 bg-slate-100 dark:bg-slate-700 rounded-lg">&times;</button>
       </header>
       <main class="p-4 overflow-y-auto flex-grow">
         <div class="grid grid-cols-2 sm:grid-cols-3 gap-4">
@@ -413,8 +279,8 @@
         </div>
       </main>
       <footer class="p-4 border-t dark:border-slate-700 flex justify-end gap-2">
-        <button (click)="closeProductSelector()" class="px-6 py-2 rounded-lg bg-slate-200 dark:bg-slate-600 font-bold">إلغاء</button>
-        <button (click)="confirmProductSelection()" class="px-6 py-2 rounded-lg bg-blue-600 text-white font-bold">تأكيد</button>
+        <button type="button" (click)="closeProductSelector()" class="px-6 py-2 rounded-lg bg-slate-200 dark:bg-slate-600 font-bold">إلغاء</button>
+        <button type="button" (click)="confirmProductSelection()" class="px-6 py-2 rounded-lg bg-blue-600 text-white font-bold">تأكيد</button>
       </footer>
     </div>
   </div>
@@ -425,8 +291,7 @@
     <div>
         <h1 class="text-3xl font-black mb-6 text-slate-800 dark:text-slate-100">الإعدادات والمظهر</h1>
         <form [formGroup]="settingsForm" (ngSubmit)="saveSettings()" class="bg-slate-50 dark:bg-slate-800 p-6 rounded-2xl shadow-lg space-y-8">
-             
-             <!-- 1. Store Info -->
+             <!-- Store Info Section -->
              <div class="space-y-4">
                 <h3 class="text-xl font-bold text-slate-700 dark:text-slate-200 border-b pb-2">معلومات المتجر</h3>
                 <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
@@ -444,14 +309,32 @@
                              </label>
                         </div>
                     </div>
+                    <div>
+                        <label class="block text-sm font-bold mb-1 text-slate-600 dark:text-slate-400">تأثير الشعار</label>
+                        <select formControlName="logoEffect" class="w-full p-3 border rounded-lg bg-white dark:bg-slate-700 dark:border-slate-600 text-slate-800 dark:text-white">
+                            <option value="none">بدون</option>
+                            <option value="pulse">نبض</option>
+                            <option value="rotate">دوران</option>
+                            <option value="bounce">ارتداد</option>
+                            <option value="sparkle">وميض</option>
+                            <option value="glow">توهج</option>
+                            <option value="3d-effect">تأثير ثلاثي الأبعاد</option>
+                        </select>
+                    </div>
                      <div>
-                        <label class="block text-sm font-bold mb-1 text-slate-600 dark:text-slate-400">عدد الأعمدة</label>
-                        <input type="number" formControlName="gridColumns" min="1" max="6" class="w-full p-3 border rounded-lg bg-white dark:bg-slate-700 dark:border-slate-600 text-slate-800 dark:text-white">
+                        <label class="block text-sm font-bold mb-1 text-slate-600 dark:text-slate-400">شكل الشعار</label>
+                        <select formControlName="logoShape" class="w-full p-3 border rounded-lg bg-white dark:bg-slate-700 dark:border-slate-600 text-slate-800 dark:text-white">
+                            <option value="default">افتراضي</option>
+                            <option value="circle">دائري</option>
+                            <option value="monogram">أحادي الحرف</option>
+                            <option value="neon-sign">إشارة نيون</option>
+                            <option value="golden-emblem">شعار ذهبي</option>
+                        </select>
                     </div>
                 </div>
              </div>
 
-             <!-- 2. Hero Section -->
+             <!-- Hero Section -->
              <div class="space-y-4">
                 <h3 class="text-xl font-bold text-slate-700 dark:text-slate-200 border-b pb-2">واجهة الترحيب (Hero)</h3>
                 <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
@@ -460,195 +343,179 @@
                         <input formControlName="heroTitle" class="w-full p-3 border rounded-lg bg-white dark:bg-slate-700 dark:border-slate-600 text-slate-800 dark:text-white">
                     </div>
                     <div>
+                        <label class="block text-sm font-bold mb-1 text-slate-600 dark:text-slate-400">لون العنوان</label>
+                        <input type="color" formControlName="heroColor" class="h-12 w-full rounded-lg cursor-pointer border dark:border-slate-600">
+                    </div>
+                    <div>
                         <label class="block text-sm font-bold mb-1 text-slate-600 dark:text-slate-400">نوع الخط</label>
                         <select formControlName="heroFont" class="w-full p-3 border rounded-lg bg-white dark:bg-slate-700 dark:border-slate-600 text-slate-800 dark:text-white">
                             <option value="'Tajawal', sans-serif">Tajawal (تجوال)</option>
                             <option value="'Cairo', sans-serif">Cairo (القاهرة)</option>
                             <option value="'Amiri', serif">Amiri (أميري)</option>
-                            <option value="'Changa', sans-serif">Changa (شانقا)</option>
-                            <option value="'Noto Kufi Arabic', sans-serif">Kufi (كوفي)</option>
+                            <option value="'Changa', sans-serif">Changa (تشانجا)</option>
+                            <option value="'Noto Kufi Arabic', sans-serif">Noto Kufi Arabic</option>
+                            <option value="'Markazi Text', serif">Markazi Text</option>
+                            <option value="'IBM Plex Sans Arabic', sans-serif">IBM Plex Sans Arabic</option>
                         </select>
                     </div>
-                    <div>
+                     <div>
                         <label class="block text-sm font-bold mb-1 text-slate-600 dark:text-slate-400">حجم الخط</label>
                         <select formControlName="heroSize" class="w-full p-3 border rounded-lg bg-white dark:bg-slate-700 dark:border-slate-600 text-slate-800 dark:text-white">
                             <option value="2.5rem">صغير</option>
                             <option value="4rem">متوسط</option>
-                            <option value="6rem">كبير</option>
-                            <option value="8rem">عملاق</option>
+                            <option value="5rem">كبير</option>
+                            <option value="6rem">كبير جداً</option>
                         </select>
                     </div>
-                    <div>
-                        <label class="block text-sm font-bold mb-1 text-slate-600 dark:text-slate-400">لون العنوان</label>
-                        <div class="flex gap-2">
-                             <input type="color" formControlName="heroColor" class="h-12 w-full rounded-lg cursor-pointer">
-                        </div>
-                    </div>
-                    <div>
+                     <div>
                         <label class="block text-sm font-bold mb-1 text-slate-600 dark:text-slate-400">حركة العنوان</label>
                         <select formControlName="heroAnimation" class="w-full p-3 border rounded-lg bg-white dark:bg-slate-700 dark:border-slate-600 text-slate-800 dark:text-white">
+                            <option value="none">بدون</option>
                             <option value="slide">انزلاق</option>
                             <option value="fade">ظهور تدريجي</option>
-                            <option value="zoom">تكبير</option>
+                            <option value="pulse">نبض</option>
                             <option value="bounce">ارتداد</option>
-                            <option value="typewriter">آلة كاتبة</option>
-                            <option value="blur-in">ظهور ضبابي</option>
-                            <option value="rotate-in">دوران للدخل</option>
+                            <option value="zoom">تكبير</option>
+                            <option value="typewriter">كتابة آلة كاتبة</option>
+                            <option value="blur-in">تلاشي ضبابي</option>
+                            <option value="rotate-in">دوران للداخل</option>
                         </select>
                     </div>
                 </div>
              </div>
 
-             <!-- 3. Appearance & Colors -->
+             <!-- Store Appearance Section -->
              <div class="space-y-4">
-                <h3 class="text-xl font-bold text-slate-700 dark:text-slate-200 border-b pb-2">الخلفيات والشعار</h3>
-                <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
+                <h3 class="text-xl font-bold text-slate-700 dark:text-slate-200 border-b pb-2">مظهر المتجر</h3>
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
                     <div>
-                        <label class="block text-sm font-bold mb-1 text-slate-600 dark:text-slate-400">صورة الخلفية</label>
+                        <label class="block text-sm font-bold mb-1 text-slate-600 dark:text-slate-400">الصورة الخلفية (URL)</label>
                         <div class="flex gap-2">
-                            <input formControlName="bgImage" placeholder="رابط مباشر أو ارفع صورة" class="flex-1 p-3 border rounded-lg bg-white dark:bg-slate-700 dark:border-slate-600 text-slate-800 dark:text-white">
+                            <input formControlName="bgImage" placeholder="رابط مباشر للصورة أو اترك فارغاً" class="flex-1 p-3 border rounded-lg bg-white dark:bg-slate-700 dark:border-slate-600 text-slate-800 dark:text-white">
                             <label class="bg-slate-200 dark:bg-slate-600 px-3 rounded-lg flex items-center justify-center cursor-pointer hover:bg-slate-300 transition" title="رفع صورة">
-                                 <i class="fa-solid fa-upload"></i>
-                                 <input type="file" class="hidden" (change)="handleFileInputChange($any($event.target), settingsForm.controls['bgImage'], 'bgUpload')">
-                             </label>
+                                <i class="fa-solid fa-upload"></i>
+                                <input type="file" class="hidden" (change)="handleFileInputChange($any($event.target), settingsForm.controls['bgImage'], 'bgImageUpload')">
+                            </label>
                         </div>
+                        @if (settingsForm.get('bgImage')?.value) {
+                            <button type="button" (click)="settingsForm.get('bgImage')?.setValue('')" class="mt-2 text-red-500 text-sm hover:underline">إزالة الصورة</button>
+                        }
                     </div>
                     <div>
-                         <label class="block text-sm font-bold mb-1 text-slate-600 dark:text-slate-400">لون الخلفية (Solid)</label>
-                         <div class="flex gap-2">
-                             <input type="color" formControlName="bgColor" class="h-12 w-full rounded-lg cursor-pointer">
-                         </div>
+                        <label class="block text-sm font-bold mb-1 text-slate-600 dark:text-slate-400">لون الخلفية (إذا لا توجد صورة)</label>
+                        <input type="color" formControlName="bgColor" class="h-12 w-full rounded-lg cursor-pointer border dark:border-slate-600">
+                    </div>
+                    <div>
+                        <label class="block text-sm font-bold mb-1 text-slate-600 dark:text-slate-400">لون تراكب الخلفية</label>
+                        <input type="color" formControlName="bgOverlayColor" class="h-12 w-full rounded-lg cursor-pointer border dark:border-slate-600">
+                    </div>
+                    <div>
+                        <label class="block text-sm font-bold mb-1 text-slate-600 dark:text-slate-400">شفافية تراكب الخلفية (0-1)</label>
+                        <input type="number" formControlName="bgOverlayOpacity" min="0" max="1" step="0.1" class="w-full p-3 border rounded-lg bg-white dark:bg-slate-700 dark:border-slate-600 text-slate-800 dark:text-white">
                     </div>
                      <div>
-                         <label class="block text-sm font-bold mb-1 text-slate-600 dark:text-slate-400">لون التعتيم (Overlay)</label>
-                         <div class="flex gap-2">
-                             <input type="color" formControlName="bgOverlayColor" class="h-12 w-full rounded-lg cursor-pointer">
-                             <input type="number" formControlName="bgOverlayOpacity" step="0.1" min="0" max="1" class="w-24 p-2 border rounded-lg text-center dark:bg-slate-700 dark:text-white">
-                         </div>
-                    </div>
-                </div>
-                
-                <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
-                     <div>
-                        <label class="block text-sm font-bold mb-1 text-slate-600 dark:text-slate-400">تأثير الشعار</label>
-                        <select formControlName="logoEffect" class="w-full p-3 border rounded-lg bg-white dark:bg-slate-700 dark:border-slate-600 text-slate-800 dark:text-white">
-                            <option value="none">بدون</option>
-                            <option value="pulse">نبض (Pulse)</option>
-                            <option value="rotate">دوران (Rotate)</option>
-                            <option value="bounce">ارتداد (Bounce)</option>
-                            <option value="sparkle">بريق (Sparkle)</option>
-                            <option value="glow">توهج (Glow)</option>
-                            <option value="3d-effect">ثلاثي الأبعاد</option>
+                        <label class="block text-sm font-bold mb-1 text-slate-600 dark:text-slate-400">السمة</label>
+                        <select formControlName="theme" class="w-full p-3 border rounded-lg bg-white dark:bg-slate-700 dark:border-slate-600 text-slate-800 dark:text-white">
+                            <option value="light">فاتح</option>
+                            <option value="dark">داكن</option>
                         </select>
                     </div>
                      <div>
-                        <label class="block text-sm font-bold mb-1 text-slate-600 dark:text-slate-400">شكل الشعار</label>
-                        <select formControlName="logoShape" class="w-full p-3 border rounded-lg bg-white dark:bg-slate-700 dark:border-slate-600 text-slate-800 dark:text-white">
-                            <option value="default">افتراضي</option>
-                            <option value="circle">دائري</option>
-                            <option value="monogram">مونوغرام</option>
-                            <option value="neon-sign">نيون</option>
-                            <option value="golden-emblem">ذهبي</option>
-                        </select>
+                        <label class="block text-sm font-bold mb-1 text-slate-600 dark:text-slate-400">عدد أعمدة الشبكة الافتراضية</label>
+                        <input type="number" formControlName="gridColumns" min="1" max="6" class="w-full p-3 border rounded-lg bg-white dark:bg-slate-700 dark:border-slate-600 text-slate-800 dark:text-white">
                     </div>
                 </div>
              </div>
 
-             <!-- 4. Cards Style -->
+             <!-- Product Card Settings -->
              <div class="space-y-4">
-                <h3 class="text-xl font-bold text-slate-700 dark:text-slate-200 border-b pb-2">تصميم البطاقات</h3>
+                <h3 class="text-xl font-bold text-slate-700 dark:text-slate-200 border-b pb-2">إعدادات بطاقة المنتج</h3>
                 <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
                     <div>
-                        <label class="block text-sm font-bold mb-1 text-slate-600 dark:text-slate-400">لون البطاقة</label>
-                        <div class="flex gap-2">
-                             <input type="color" formControlName="cardBgColor" class="h-12 w-full rounded-lg cursor-pointer">
-                        </div>
+                        <label class="block text-sm font-bold mb-1 text-slate-600 dark:text-slate-400">لون خلفية البطاقة</label>
+                        <input type="color" formControlName="cardBgColor" class="h-12 w-full rounded-lg cursor-pointer border dark:border-slate-600">
                     </div>
-                     <div>
-                        <label class="block text-sm font-bold mb-1 text-slate-600 dark:text-slate-400">لون النص</label>
-                        <div class="flex gap-2">
-                             <input type="color" formControlName="cardTextColor" class="h-12 w-full rounded-lg cursor-pointer">
-                        </div>
-                    </div>
-                </div>
-                <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
                     <div>
-                        <label class="block text-sm font-bold mb-1 text-slate-600 dark:text-slate-400">ظل البطاقة (Shadow)</label>
+                        <label class="block text-sm font-bold mb-1 text-slate-600 dark:text-slate-400">لون نص البطاقة</label>
+                        <input type="color" formControlName="cardTextColor" class="h-12 w-full rounded-lg cursor-pointer border dark:border-slate-600">
+                    </div>
+                    <div>
+                        <label class="block text-sm font-bold mb-1 text-slate-600 dark:text-slate-400">ظل البطاقة</label>
                         <select formControlName="cardShadow" class="w-full p-3 border rounded-lg bg-white dark:bg-slate-700 dark:border-slate-600 text-slate-800 dark:text-white">
-                            <option value="none">بدون (Flat)</option>
-                            <option value="0 1px 2px 0 rgb(0 0 0 / 0.05)">خفيف جداً (Very Soft)</option>
-                            <option value="0 4px 6px -1px rgb(0 0 0 / 0.1), 0 2px 4px -2px rgb(0 0 0 / 0.1)">ناعم (Soft)</option>
-                            <option value="0 10px 15px -3px rgb(0 0 0 / 0.1), 0 4px 6px -4px rgb(0 0 0 / 0.1)">متوسط (Medium)</option>
-                            <option value="0 20px 25px -5px rgb(0 0 0 / 0.1), 0 8px 10px -6px rgb(0 0 0 / 0.1)">عميق (Deep)</option>
-                            <option value="0 25px 50px -12px rgb(0 0 0 / 0.25)">ثلاثي الأبعاد (3D)</option>
-                            <option value="inset 0 2px 4px 0 rgb(0 0 0 / 0.06)">داخلي (Inner)</option>
-                            <option value="5px 5px 0px 0px rgba(0,0,0,0.2)">ريترو (Retro)</option>
-                            <option value="0 0 15px rgba(255, 255, 255, 0.5)">توهج (Glow)</option>
+                            <option value="none">بدون</option>
+                            <option value="0 1px 3px 0 rgb(0 0 0 / 0.1), 0 1px 2px -1px rgb(0 0 0 / 0.1)">صغير</option>
+                            <option value="0 10px 15px -3px rgb(0 0 0 / 0.1), 0 4px 6px -4px rgb(0 0 0 / 0.1)">متوسط</option>
+                            <option value="0 20px 25px -5px rgb(0 0 0 / 0.1), 0 8px 10px -6px rgb(0 0 0 / 0.1)">كبير</option>
+                            <option value="0 25px 50px -12px rgb(0 0 0 / 0.25)">كبير جداً</option>
                         </select>
                     </div>
                     <div>
-                        <label class="block text-sm font-bold mb-1 text-slate-600 dark:text-slate-400">سرعة الحركة</label>
-                        <input type="number" formControlName="cardAnimationSpeed" class="w-full p-3 border rounded-lg bg-white dark:bg-slate-700 dark:border-slate-600 text-slate-800 dark:text-white">
-                    </div>
-                </div>
-                
-                 <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
-                    <div>
-                        <label class="block text-sm font-bold mb-1 text-slate-600 dark:text-slate-400">حركة البطاقة</label>
-                        <select formControlName="cardAnimation" class="w-full p-3 border rounded-lg bg-white dark:bg-slate-700 dark:border-slate-600 text-slate-800 dark:text-white">
-                            <option value="magnetic-tilt">إمالة مغناطيسية</option>
-                            <option value="floating-elements">عناصر عائمة</option>
-                            <option value="directional-glare">لمعان موجه</option>
-                            <option value="spotlight-focus">تركيز ضوئي</option>
-                            <option value="liquid-distortion">تموج سائل</option>
-                            <option value="glitch-effect">تأثير الخلل (Glitch)</option>
-                        </select>
-                    </div>
-                     <div>
                         <label class="block text-sm font-bold mb-1 text-slate-600 dark:text-slate-400">شكل البطاقة</label>
                         <select formControlName="cardShape" class="w-full p-3 border rounded-lg bg-white dark:bg-slate-700 dark:border-slate-600 text-slate-800 dark:text-white">
-                            <option value="default">افتراضي (حواف ناعمة)</option>
-                            <option value="square">مربع (حواف حادة)</option>
+                            <option value="default">افتراضي (زوايا مستديرة)</option>
+                            <option value="square">مربع</option>
                             <option value="circle">دائري</option>
                             <option value="rhombus">معين</option>
-                            <option value="floating">معلقة في الهواء (بدون بطاقة)</option>
+                            <option value="floating">عائمة (شفافة)</option>
                         </select>
                     </div>
-                    <div class="flex items-center gap-4 mt-6">
-                        <label class="flex items-center gap-2 cursor-pointer">
-                             <input type="checkbox" formControlName="cardShowTitle" class="w-5 h-5">
-                             <span class="text-slate-600 dark:text-slate-300 font-bold">إظهار العنوان</span>
-                        </label>
-                         <label class="flex items-center gap-2 cursor-pointer">
-                             <input type="checkbox" formControlName="cardShowPrice" class="w-5 h-5">
-                             <span class="text-slate-600 dark:text-slate-300 font-bold">إظهار السعر</span>
-                        </label>
-                    </div>
-                </div>
-             </div>
-
-             <!-- 5. Other Settings -->
-             <div class="space-y-4">
-                 <h3 class="text-xl font-bold text-slate-700 dark:text-slate-200 border-b pb-2">إعدادات إضافية</h3>
-                 <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
                      <div>
-                        <label class="block text-sm font-bold mb-1 text-slate-600 dark:text-slate-400">مكان عرض العروض</label>
-                        <select formControlName="offerDisplayType" class="w-full p-3 border rounded-lg bg-white dark:bg-slate-700 dark:border-slate-600 text-slate-800 dark:text-white">
-                            <option value="beside-logo">بجانب الشعار</option>
-                            <option value="beside-cart">بجانب السلة</option>
-                            <option value="above-hero">فوق العنوان</option>
+                        <label class="block text-sm font-bold mb-1 text-slate-600 dark:text-slate-400">حركة البطاقة عند التمرير</label>
+                        <select formControlName="cardAnimation" class="w-full p-3 border rounded-lg bg-white dark:bg-slate-700 dark:border-slate-600 text-slate-800 dark:text-white">
+                            <option value="none">بدون</option>
+                            <option value="magnetic-tilt">إمالة مغناطيسية</option>
+                            <option value="floating-elements">عناصر عائمة</option>
+                            <option value="directional-glare">وهج اتجاهي</option>
+                            <option value="spotlight-focus">تركيز ضوئي</option>
+                            <option value="liquid-distortion">تشوه سائل</option>
+                            <option value="glitch-effect">تأثير الخلل</option>
+                            <option value="staggered-pop">ظهور متدرج</option>
+                            <option value="random-mix">مزج عشوائي</option>
                         </select>
                     </div>
                     <div>
-                        <label class="block text-sm font-bold mb-1 text-slate-600 dark:text-slate-400">شكل الإشعارات</label>
-                         <select formControlName="notificationShape" class="w-full p-3 border rounded-lg bg-white dark:bg-slate-700 dark:border-slate-600 text-slate-800 dark:text-white">
-                            <option value="default">افتراضي</option>
+                        <label class="block text-sm font-bold mb-1 text-slate-600 dark:text-slate-400">سرعة الحركة (بالثواني)</label>
+                        <input type="number" formControlName="cardAnimationSpeed" min="0.1" max="10" step="0.1" class="w-full p-3 border rounded-lg bg-white dark:bg-slate-700 dark:border-slate-600 text-slate-800 dark:text-white">
+                    </div>
+                    <div class="flex items-center gap-2">
+                        <input type="checkbox" formControlName="cardShowTitle" id="cardShowTitle" class="w-5 h-5 text-blue-600 bg-slate-200 border-slate-300 rounded focus:ring-blue-500 focus:ring-2 cursor-pointer dark:bg-slate-600 dark:border-slate-500">
+                        <label for="cardShowTitle" class="text-sm font-bold text-slate-800 dark:text-slate-200 cursor-pointer">عرض عنوان المنتج تحت البطاقة</label>
+                    </div>
+                    <div class="flex items-center gap-2">
+                        <input type="checkbox" formControlName="cardShowPrice" id="cardShowPrice" class="w-5 h-5 text-blue-600 bg-slate-200 border-slate-300 rounded focus:ring-blue-500 focus:ring-2 cursor-pointer dark:bg-slate-600 dark:border-slate-500">
+                        <label for="cardShowPrice" class="text-sm font-bold text-slate-800 dark:text-slate-200 cursor-pointer">عرض سعر المنتج تحت البطاقة</label>
+                    </div>
+                </div>
+             </div>
+             
+             <!-- Notifications and Offers Display -->
+             <div class="space-y-4">
+                <h3 class="text-xl font-bold text-slate-700 dark:text-slate-200 border-b pb-2">الإشعارات وعروض المتجر</h3>
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                    <div>
+                        <label class="block text-sm font-bold mb-1 text-slate-600 dark:text-slate-400">شكل الإشعارات المنبثقة</label>
+                        <select formControlName="notificationShape" class="w-full p-3 border rounded-lg bg-white dark:bg-slate-700 dark:border-slate-600 text-slate-800 dark:text-white">
+                            <option value="default">افتراضي (أبيض)</option>
                             <option value="top-bar">شريط علوي</option>
+                            <option value="bottom-bar">شريط سفلي</option>
+                            <option value="side-accent">شريط جانبي</option>
                             <option value="glow">متوهج</option>
-                            <option value="neon">نيون</option>
+                            <option value="gradient">تدرج لوني</option>
+                            <option value="minimal">بسيط</option>
+                            <option value="retro">ريترو</option>
+                            <option value="neumorphic">نيومورفيك</option>
+                            <option value="sleek">أنيق</option>
                         </select>
                     </div>
-                 </div>
+                    <div>
+                        <label class="block text-sm font-bold mb-1 text-slate-600 dark:text-slate-400">مكان عرض العروض الترويجية</label>
+                        <select formControlName="offerDisplayType" class="w-full p-3 border rounded-lg bg-white dark:bg-slate-700 dark:border-slate-600 text-slate-800 dark:text-white">
+                            <option value="beside-logo">بجانب الشعار</option>
+                            <option value="beside-cart">بجانب سلة التسوق</option>
+                            <option value="above-hero">فوق قسم الترحيب</option>
+                        </select>
+                    </div>
+                </div>
              </div>
 
              <button type="submit" class="w-full px-8 py-4 bg-blue-600 text-white rounded-xl font-bold text-lg hover:bg-blue-700 transition shadow-lg sticky bottom-4 z-10">حفظ كافة الإعدادات</button>
@@ -656,125 +523,129 @@
     </div>
 </ng-template>
 
-<ng-template #contactTemplate>
-    <div>
-        <h1 class="text-3xl font-black mb-6 text-slate-800 dark:text-slate-100">معلومات الاتصال والفوتر</h1>
-        <form [formGroup]="settingsForm" (ngSubmit)="saveSettings()" class="bg-slate-50 dark:bg-slate-800 p-6 rounded-2xl shadow-lg space-y-8">
-             <div class="space-y-4" formGroupName="footer">
-                <h3 class="text-xl font-bold text-slate-700 dark:text-slate-200 border-b pb-2">تفاصيل المتجر</h3>
-                
-                <div>
-                    <label class="block text-sm font-bold mb-1 text-slate-600 dark:text-slate-400">نص "من نحن"</label>
-                    <textarea formControlName="aboutText" rows="3" class="w-full p-3 border rounded-lg bg-white dark:bg-slate-700 dark:border-slate-600 text-slate-800 dark:text-white"></textarea>
-                </div>
-                
-                <div>
-                    <label class="block text-sm font-bold mb-1 text-slate-600 dark:text-slate-400">البريد الإلكتروني</label>
-                    <input formControlName="contactEmail" class="w-full p-3 border rounded-lg bg-white dark:bg-slate-700 dark:border-slate-600 text-slate-800 dark:text-white">
-                </div>
-
-                <div formGroupName="socialLinks" class="space-y-3">
-                    <label class="block text-sm font-bold mb-1 text-slate-600 dark:text-slate-400">روابط التواصل الاجتماعي</label>
-                    <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
-                        <input formControlName="facebook" placeholder="Facebook URL" class="p-3 border rounded-lg dark:bg-slate-700 dark:text-white">
-                        <input formControlName="instagram" placeholder="Instagram URL" class="p-3 border rounded-lg dark:bg-slate-700 dark:text-white">
-                        <input formControlName="twitter" placeholder="Twitter URL" class="p-3 border rounded-lg dark:bg-slate-700 dark:text-white">
-                        <input formControlName="telegram" placeholder="Telegram URL" class="p-3 border rounded-lg dark:bg-slate-700 dark:text-white">
-                        <input formControlName="tiktok" placeholder="TikTok URL" class="p-3 border rounded-lg dark:bg-slate-700 dark:text-white">
-                        <input formControlName="youtube" placeholder="YouTube URL" class="p-3 border rounded-lg dark:bg-slate-700 dark:text-white">
-                    </div>
-                </div>
-
-                <div class="space-y-2">
-                    <label class="block text-sm font-bold mb-1 text-slate-600 dark:text-slate-400">روابط سريعة</label>
-                    <div formArrayName="quickLinks" class="space-y-2">
-                        @for (link of quickLinks.controls; track $index) {
-                            <div [formGroupName]="$index" class="flex gap-2">
-                                <input formControlName="label" placeholder="العنوان" class="flex-1 p-2 border rounded-lg dark:bg-slate-700 dark:text-white">
-                                <input formControlName="url" placeholder="الرابط" class="flex-1 p-2 border rounded-lg dark:bg-slate-700 dark:text-white">
-                                <button type="button" (click)="removeQuickLink($index)" class="text-red-500 hover:bg-red-100 p-2 rounded-lg"><i class="fa-solid fa-trash"></i></button>
-                            </div>
-                        }
-                    </div>
-                    <button type="button" (click)="addQuickLink()" class="text-blue-600 font-bold text-sm">+ إضافة رابط</button>
-                </div>
-             </div>
-             <button type="submit" class="w-full px-8 py-4 bg-blue-600 text-white rounded-xl font-bold text-lg hover:bg-blue-700 transition shadow-lg sticky bottom-4 z-10">حفظ المعلومات</button>
-        </form>
-    </div>
-</ng-template>
-
-<ng-template #sectionsTemplate>
-    <div>
-        <div class="flex justify-between mb-6">
-            <h1 class="text-3xl font-black text-slate-800 dark:text-slate-100">أقسام المتجر</h1>
-            <button (click)="isEditingSection.set(true)" class="px-4 py-2 bg-blue-600 text-white rounded-lg font-bold">إضافة قسم</button>
-        </div>
-        @if(isEditingSection()) {
-            <form [formGroup]="sectionForm" (ngSubmit)="saveSection()" class="bg-slate-50 dark:bg-slate-800 p-6 rounded-2xl shadow-lg mb-6">
-                <div class="grid grid-cols-2 gap-4">
-                    <input formControlName="name" placeholder="اسم القسم" class="p-3 border rounded-lg dark:bg-slate-700 dark:text-white">
-                    <input type="number" formControlName="productCount" placeholder="عدد المنتجات" class="p-3 border rounded-lg dark:bg-slate-700 dark:text-white">
-                </div>
-                <div class="mt-4 flex gap-2">
-                    <button type="submit" class="px-4 py-2 bg-green-600 text-white rounded-lg font-bold">حفظ</button>
-                    <button type="button" (click)="cancelSectionEdit()" class="px-4 py-2 bg-slate-200 rounded-lg font-bold">إلغاء</button>
-                </div>
-            </form>
-        }
-        <div class="grid gap-4">
-            @for(s of settings().storeSections; track s.id) {
-                <div class="bg-white dark:bg-slate-800 p-4 rounded-xl shadow flex justify-between items-center">
-                    <span class="font-bold text-slate-800 dark:text-white">{{ s.name }}</span>
-                    <div class="flex gap-2">
-                        <button (click)="editSection(s)" class="text-blue-600 px-3"><i class="fa-solid fa-pen"></i></button>
-                        <button (click)="deleteSection(s.id)" class="text-red-600 px-3"><i class="fa-solid fa-trash"></i></button>
-                    </div>
-                </div>
-            }
-        </div>
-    </div>
-</ng-template>
-
 <ng-template #productsTemplate>
     <div>
-        <div class="flex justify-between mb-6">
+        <div class="flex justify-between items-center mb-6">
             <h1 class="text-3xl font-black text-slate-800 dark:text-slate-100">المنتجات</h1>
-            <button (click)="isEditingProduct.set(true)" class="px-4 py-2 bg-blue-600 text-white rounded-lg font-bold">إضافة منتج</button>
+            <div class="flex gap-2">
+                 <button type="button" (click)="resetProducts()" class="px-4 py-3 rounded-lg font-bold bg-slate-200 dark:bg-slate-700 hover:bg-red-200 text-slate-700 dark:text-slate-200 transition" title="إصلاح المشاكل / استعادة الافتراضي">
+                    <i class="fa-solid fa-rotate-right"></i> استعادة
+                </button>
+                <button type="button" (click)="isEditingProduct.set(!isEditingProduct()); cancelProductEdit()" class="px-5 py-3 rounded-lg font-bold transition-all duration-300 flex items-center gap-2" [class.bg-blue-600]="!isEditingProduct()" [class.text-white]="!isEditingProduct()" [class.bg-red-500]="isEditingProduct()" [class.text-white]="isEditingProduct()">
+                    @if (isEditingProduct()) {
+                        <i class="fa-solid fa-times"></i>
+                        <span>إغلاق النموذج</span>
+                    } @else {
+                        <i class="fa-solid fa-plus"></i>
+                        <span>إضافة منتج جديد</span>
+                    }
+                </button>
+            </div>
         </div>
+
         @if(isEditingProduct()) {
-            <form [formGroup]="productForm" (ngSubmit)="saveProduct()" class="bg-slate-50 dark:bg-slate-800 p-6 rounded-2xl shadow-lg mb-6">
-                <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
-                    <input formControlName="name" placeholder="اسم المنتج" class="p-3 border rounded-lg dark:bg-slate-700 dark:text-white">
-                    <input type="number" formControlName="price" placeholder="السعر" class="p-3 border rounded-lg dark:bg-slate-700 dark:text-white">
-                    <input formControlName="category" placeholder="التصنيف" class="p-3 border rounded-lg dark:bg-slate-700 dark:text-white">
-                    <div class="flex gap-2">
-                        <input formControlName="image" placeholder="رابط الصورة" class="flex-1 p-3 border rounded-lg dark:bg-slate-700 dark:text-white">
-                         <!-- MANUAL IMAGE UPLOAD RESTORED -->
-                        <label class="bg-slate-200 px-3 rounded-lg flex items-center justify-center cursor-pointer hover:bg-slate-300 transition" title="رفع صورة">
-                             <i class="fa-solid fa-upload"></i>
-                             <input type="file" class="hidden" (change)="handleFileInputChange($any($event.target), productForm.controls['image'], 'productImage')">
-                        </label>
-                        <!-- CAMERA RESTORED -->
-                        <button type="button" (click)="openCamera(productForm.get('image'))" class="bg-slate-200 px-3 rounded-lg hover:bg-slate-300 transition" title="الكاميرا"><i class="fa-solid fa-camera"></i></button>
+            <div class="bg-slate-50 dark:bg-slate-800 p-6 rounded-2xl shadow-lg mb-8 animate-fade-in-up-sm">
+                <form [formGroup]="productForm" (ngSubmit)="saveProduct()" class="space-y-8">
+                     <!-- Image Upload -->
+                    <div class="grid grid-cols-1 lg:grid-cols-3 gap-8">
+                        <div class="lg:col-span-1 space-y-2">
+                            <label class="font-bold text-lg text-slate-800 dark:text-slate-100">صورة المنتج</label>
+                            @if(productForm.get('image')?.value) {
+                                <div class="relative group">
+                                    <img [src]="productForm.get('image')?.value" alt="Preview" class="w-full h-auto object-cover rounded-xl shadow-md aspect-square">
+                                    <button type="button" (click)="productForm.controls.image.setValue('')" class="absolute top-2 right-2 bg-red-500 text-white w-8 h-8 rounded-full flex items-center justify-center shadow-lg hover:bg-red-600 transition opacity-0 group-hover:opacity-100">
+                                        <i class="fa-solid fa-trash"></i>
+                                    </button>
+                                </div>
+                            } @else {
+                                <div class="grid grid-cols-2 gap-2">
+                                    <label class="border-2 border-dashed border-slate-300 dark:border-slate-600 rounded-xl p-4 flex flex-col items-center justify-center text-slate-500 hover:border-blue-500 hover:text-blue-500 transition cursor-pointer aspect-square">
+                                        <i class="fa-solid fa-upload text-3xl"></i>
+                                        <span class="text-sm font-bold mt-2 text-center">رفع صورة</span>
+                                        <input type="file" class="hidden" (change)="handleFileInputChange($any($event.target), productForm.controls['image'], 'productImage')">
+                                    </label>
+                                    <button type="button" (click)="openCamera(productForm.get('image'))" class="border-2 border-dashed border-slate-300 dark:border-slate-600 rounded-xl p-4 flex flex-col items-center justify-center text-slate-500 hover:border-blue-500 hover:text-blue-500 transition aspect-square">
+                                        <i class="fa-solid fa-camera text-3xl"></i>
+                                        <span class="text-sm font-bold mt-2 text-center">الكاميرا</span>
+                                    </button>
+                                </div>
+                            }
+                        </div>
+                        <div class="lg:col-span-2 space-y-4">
+                            <div>
+                                <label class="font-bold text-slate-700 dark:text-slate-300">اسم المنتج</label>
+                                <input formControlName="name" placeholder="مثال: ساعة ذكية رياضية" class="w-full p-3 border rounded-lg dark:bg-slate-700 dark:text-white mt-1">
+                            </div>
+                            <div class="grid grid-cols-2 gap-4">
+                                <div>
+                                    <label class="font-bold text-slate-700 dark:text-slate-300">السعر (د.ج)</label>
+                                    <input type="number" formControlName="price" placeholder="4500" class="w-full p-3 border rounded-lg dark:bg-slate-700 dark:text-white mt-1">
+                                </div>
+                                <div>
+                                    <label class="font-bold text-slate-700 dark:text-slate-300">التصنيف</label>
+                                    <input formControlName="category" placeholder="إلكترونيات" class="w-full p-3 border rounded-lg dark:bg-slate-700 dark:text-white mt-1">
+                                </div>
+                            </div>
+                            <div>
+                                <label class="font-bold text-slate-700 dark:text-slate-300">الوصف</label>
+                                <textarea formControlName="description" rows="4" placeholder="وصف موجز لمميزات المنتج..." class="w-full p-3 border rounded-lg dark:bg-slate-700 dark:text-white mt-1 resize-y"></textarea>
+                            </div>
+                        </div>
                     </div>
-                </div>
-                <div class="mt-4 flex gap-2">
-                    <button type="submit" class="px-4 py-2 bg-green-600 text-white rounded-lg font-bold">حفظ</button>
-                    <button type="button" (click)="cancelProductEdit()" class="px-4 py-2 bg-slate-200 rounded-lg font-bold">إلغاء</button>
-                </div>
-            </form>
+
+                    <div class="border-t dark:border-slate-700 pt-6">
+                        <h3 class="font-bold text-lg mb-4 text-slate-800 dark:text-slate-100">أنواع المنتج (ألوان، مقاسات، ...)</h3>
+                        <div [formGroup]="newVariantForm" class="grid grid-cols-1 md:grid-cols-[auto_1fr_1fr_auto] gap-4 items-end bg-slate-100 dark:bg-slate-900/50 p-4 rounded-lg">
+                            <div>
+                                <label class="font-bold text-sm dark:text-slate-300">اللون</label>
+                                <input type="color" formControlName="color" class="w-16 h-10 p-1 border rounded-lg dark:bg-slate-700 cursor-pointer">
+                            </div>
+                            <div>
+                                <label class="font-bold text-sm dark:text-slate-300">صورة للون (اختياري)</label>
+                                <input formControlName="image" placeholder="رابط الصورة" class="w-full p-2 border rounded-lg dark:bg-slate-700">
+                            </div>
+                            <div>
+                                <label class="font-bold text-sm dark:text-slate-300">المقاسات (بفاصلة)</label>
+                                <input formControlName="sizes" placeholder="S,M,L,XL" class="w-full p-2 border rounded-lg dark:bg-slate-700">
+                            </div>
+                            <button type="button" (click)="addVariant()" class="px-4 py-2 bg-slate-600 text-white rounded-lg font-bold h-10">إضافة</button>
+                        </div>
+                        <div formArrayName="variants" class="space-y-2 mt-4">
+                            @for(variant of variants.controls; track variant; let i = $index) {
+                                <div [formGroupName]="i" class="flex items-center gap-4 p-2 bg-white dark:bg-slate-700 rounded-lg animate-fade-in-up-sm">
+                                    <div class="w-6 h-6 rounded-full border dark:border-slate-500" [style.backgroundColor]="variant.value.color"></div>
+                                    <div class="flex-1 font-mono text-sm dark:text-slate-200">مقاسات: {{ variant.value.sizes || 'غير محدد' }}</div>
+                                    <button type="button" (click)="removeVariant(i)" class="text-red-500 hover:text-red-700"><i class="fa-solid fa-trash"></i></button>
+                                </div>
+                            }
+                        </div>
+                    </div>
+
+                    <div class="flex gap-4 pt-6 border-t dark:border-slate-700">
+                        <button type="submit" [disabled]="productForm.invalid" class="px-8 py-3 bg-green-600 text-white rounded-lg font-bold text-lg hover:bg-green-700 transition disabled:opacity-50">
+                            <i class="fa-solid fa-save mr-2"></i> {{ editingProductId() ? 'حفظ التعديلات' : 'حفظ المنتج' }}
+                        </button>
+                        <button type="button" (click)="cancelProductEdit()" class="px-6 py-3 bg-slate-200 dark:bg-slate-600 rounded-lg font-bold hover:bg-slate-300 transition">إلغاء</button>
+                    </div>
+                </form>
+            </div>
         }
-        <div class="grid grid-cols-1 sm:grid-cols-3 gap-4">
+
+        <div class="space-y-3">
+             <!-- Fixed track expression: Using ID if strictly unique (now enforced by service), fallback to index to prevent crash -->
             @for(p of products(); track p.id) {
-                <div class="bg-white dark:bg-slate-800 p-4 rounded-xl shadow relative group">
-                    <img [src]="p.image" class="w-full h-32 object-cover rounded-lg mb-2">
-                    <h3 class="font-bold dark:text-white">{{ p.name }}</h3>
-                    <p class="text-blue-600 font-bold">{{ p.price }} د.ج</p>
-                    <div class="absolute top-2 left-2 hidden group-hover:flex gap-2">
-                        <button (click)="editProduct(p)" class="bg-white p-2 rounded-full shadow text-blue-600"><i class="fa-solid fa-pen"></i></button>
-                        <button (click)="deleteProduct(p.id)" class="bg-white p-2 rounded-full shadow text-red-600"><i class="fa-solid fa-trash"></i></button>
-                        <button (click)="populateAdForm(p)" class="bg-white p-2 rounded-full shadow text-purple-600"><i class="fa-solid fa-bullhorn"></i></button>
+                <div class="bg-white dark:bg-slate-800 p-3 rounded-xl shadow-sm hover:shadow-md transition-shadow flex items-center gap-4">
+                    <img [src]="p.image" class="w-20 h-20 object-cover rounded-lg flex-shrink-0 bg-slate-100 dark:bg-slate-700">
+                    <div class="flex-1 min-w-0">
+                        <h3 class="font-bold text-lg text-slate-800 dark:text-white truncate">{{ p.name }}</h3>
+                        <div class="flex items-center gap-4 text-sm mt-1">
+                            <span class="text-blue-600 font-bold">{{ p.price.toLocaleString() }} د.ج</span>
+                            <span class="text-slate-500 dark:text-slate-400 bg-slate-100 dark:bg-slate-700 px-2 py-0.5 rounded-full">{{ p.category }}</span>
+                        </div>
+                    </div>
+                    <div class="flex gap-2">
+                        <button type="button" (click)="editProduct($event, p)" class="w-12 h-12 bg-slate-100 dark:bg-slate-700 rounded-lg text-blue-600 hover:bg-blue-100 dark:hover:bg-blue-900/50 transition" title="تعديل"><i class="fa-solid fa-pen text-xl"></i></button>
+                        <button type="button" (click)="deleteProduct($event, p.id)" class="w-12 h-12 bg-slate-100 dark:bg-slate-700 rounded-lg text-red-600 hover:bg-red-100 dark:hover:bg-red-900/50 transition" title="حذف"><i class="fa-solid fa-trash text-xl"></i></button>
                     </div>
                 </div>
             }
@@ -785,170 +656,274 @@
 <ng-template #ordersTemplate>
     <div>
         <h1 class="text-3xl font-black mb-6 text-slate-800 dark:text-slate-100">الطلبات</h1>
-        <div class="space-y-4">
-            @if(orders().length === 0) {
-                <div class="text-center py-10 text-slate-500">لا توجد طلبات حتى الآن.</div>
-            }
-            @for(order of orders(); track order.id) {
-                <div class="bg-white dark:bg-slate-800 p-4 rounded-xl shadow relative">
-                    <div class="flex justify-between items-start mb-4">
-                        <div>
-                            <h3 class="font-bold text-lg dark:text-white">{{ order.customer.name }}</h3>
-                            <p class="text-sm text-slate-500">{{ order.customer.phone }} - {{ order.customer.wilaya }}</p>
-                            <span class="inline-block mt-1 px-2 py-1 text-xs bg-blue-100 text-blue-700 rounded-full">{{ order.deliveryCompany }}</span>
-                        </div>
-                        <div class="text-left">
-                            <div class="font-black text-xl text-green-600">{{ order.total }} د.ج</div>
-                            <div class="text-xs text-slate-400">{{ order.date | date:'short' }}</div>
-                        </div>
-                    </div>
-                    
-                    <div class="border-t border-slate-100 dark:border-slate-700 pt-2 mb-4">
-                        <div class="text-sm text-slate-600 dark:text-slate-300">
-                            @for(item of order.items; track item.id) {
-                                <div>• {{ item.name }} (x{{ item.quantity }}) @if(item.selectedVariant){<span class="text-xs text-slate-400">[{{item.selectedVariant.color}}]</span>}</div>
-                            }
-                        </div>
-                    </div>
-
-                    <div class="flex gap-2 justify-end">
-                        <button (click)="downloadOrder(order)" class="bg-slate-100 dark:bg-slate-700 text-slate-700 dark:text-white px-3 py-2 rounded-lg text-sm hover:bg-slate-200 transition">
-                            <i class="fa-solid fa-download"></i> تحميل
-                        </button>
-                        <div class="relative">
-                            <button (click)="togglePrintOptions($event, order.id)" class="bg-blue-600 text-white px-3 py-2 rounded-lg text-sm hover:bg-blue-700 transition">
-                                <i class="fa-solid fa-print"></i> طباعة
-                            </button>
-                            @if(activePrintMenuOrderId() === order.id) {
-                                <div class="absolute bottom-full left-0 mb-2 w-48 bg-white dark:bg-slate-700 shadow-xl rounded-lg overflow-hidden z-10 animate-fade-in-up-sm border dark:border-slate-600">
-                                    <button (click)="printOrder()" class="block w-full text-right px-4 py-2 hover:bg-slate-100 dark:hover:bg-slate-600 text-sm">طباعة إيصال</button>
-                                    <button (click)="printViaWifi()" class="block w-full text-right px-4 py-2 hover:bg-slate-100 dark:hover:bg-slate-600 text-sm">طابعة WIFI</button>
-                                    <button (click)="openBluetoothHelp()" class="block w-full text-right px-4 py-2 hover:bg-slate-100 dark:hover:bg-slate-600 text-sm text-blue-500">طابعة Bluetooth ؟</button>
-                                </div>
-                            }
-                        </div>
-                        <button (click)="deleteOrder($event, order)" class="bg-red-100 text-red-600 px-3 py-2 rounded-lg text-sm hover:bg-red-200 transition">
-                            <i class="fa-solid fa-trash"></i>
-                        </button>
-                    </div>
-                </div>
-            }
+        <div class="bg-slate-50 dark:bg-slate-800 p-4 rounded-2xl shadow-lg">
+             <div class="overflow-x-auto">
+                <table class="w-full text-right">
+                    <thead>
+                        <tr class="border-b dark:border-slate-700">
+                            <th class="p-3">الزبون</th>
+                            <th class="p-3">الهاتف</th>
+                            <th class="p-3">الإجمالي</th>
+                            <th class="p-3">التاريخ</th>
+                            <th class="p-3"></th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        @for (order of orders(); track order.id) {
+                            <tr class="border-b dark:border-slate-700 hover:bg-slate-100 dark:hover:bg-slate-700/50">
+                                <td class="p-3 font-bold">{{ order.customer.name }}</td>
+                                <td class="p-3">{{ order.customer.phone }}</td>
+                                <td class="p-3 font-mono">{{ order.total.toLocaleString() }} د.ج</td>
+                                <td class="p-3 text-sm">{{ order.date | date:'short' }}</td>
+                                <td class="p-3 relative">
+                                    <button (click)="togglePrintOptions($event, order.id)" class="px-3 py-1 bg-slate-200 dark:bg-slate-600 rounded-lg">...</button>
+                                    @if(activePrintMenuOrderId() === order.id) {
+                                      <div class="absolute left-0 top-full mt-2 w-48 bg-white dark:bg-slate-900 rounded-lg shadow-2xl border dark:border-slate-700 z-20 animate-fade-in-up-sm">
+                                          <button (click)="printOrder()" class="w-full text-right px-4 py-2 hover:bg-slate-100 dark:hover:bg-slate-800">طباعة</button>
+                                          <button (click)="downloadOrder(order)" class="w-full text-right px-4 py-2 hover:bg-slate-100 dark:hover:bg-slate-800">تحميل</button>
+                                          <button (click)="deleteOrder($event, order)" class="w-full text-right px-4 py-2 text-red-500 hover:bg-red-500/10">حذف</button>
+                                      </div>
+                                    }
+                                </td>
+                            </tr>
+                        }
+                    </tbody>
+                </table>
+            </div>
         </div>
     </div>
 </ng-template>
 
 <ng-template #categoriesTemplate>
-    <div>
-        <h1 class="text-3xl font-black mb-6 text-slate-800 dark:text-slate-100">التصنيفات</h1>
-        <div class="space-y-2">
-            @for(cat of categories(); track cat) {
-                <div class="bg-white dark:bg-slate-800 p-4 rounded-xl shadow flex justify-between">
-                    <span class="font-bold dark:text-white">{{ cat }}</span>
-                    <div class="flex gap-2">
-                        <button (click)="renameCategory(cat)" class="text-blue-600"><i class="fa-solid fa-pen"></i></button>
-                        <button (click)="deleteCategory(cat)" class="text-red-600"><i class="fa-solid fa-trash"></i></button>
+    <div class="space-y-6">
+        <h1 class="text-3xl font-black text-slate-800 dark:text-slate-100">التصنيفات</h1>
+         <div class="bg-slate-50 dark:bg-slate-800 p-6 rounded-2xl shadow-lg">
+             <div class="grid grid-cols-2 md:grid-cols-4 gap-4">
+                 @for(cat of categories(); track cat) {
+                    <div class="bg-white dark:bg-slate-700 p-4 rounded-lg flex justify-between items-center">
+                        <span class="font-bold">{{cat}}</span>
+                        <div class="flex gap-2">
+                           <button (click)="renameCategory(cat)" class="text-blue-500 hover:text-blue-700 transition"><i class="fa-solid fa-pen text-xl"></i></button>
+                           <button (click)="deleteCategory(cat)" class="text-red-500 hover:text-red-700 transition"><i class="fa-solid fa-trash text-xl"></i></button>
+                        </div>
                     </div>
-                </div>
-            }
-        </div>
+                 }
+            </div>
+         </div>
     </div>
 </ng-template>
 
 <ng-template #deliveryTemplate>
-    <div>
-        <div class="flex justify-between mb-6">
-            <h1 class="text-3xl font-black text-slate-800 dark:text-slate-100">شركات التوصيل</h1>
-            <button (click)="isEditingDelivery.set(true)" class="px-4 py-2 bg-blue-600 text-white rounded-lg font-bold">إضافة شركة</button>
-        </div>
-        @if(isEditingDelivery()) {
-            <form [formGroup]="deliveryForm" (ngSubmit)="saveDeliveryCompany()" class="bg-slate-50 dark:bg-slate-800 p-6 rounded-2xl shadow-lg mb-6">
-                <div class="flex gap-4">
-                    <input formControlName="name" placeholder="الاسم" class="flex-1 p-3 border rounded-lg dark:bg-slate-700 dark:text-white">
-                    <input type="number" formControlName="fee" placeholder="السعر" class="flex-1 p-3 border rounded-lg dark:bg-slate-700 dark:text-white">
-                </div>
-                <div class="mt-4 flex gap-2">
-                    <button type="submit" class="px-4 py-2 bg-green-600 text-white rounded-lg font-bold">حفظ</button>
-                    <button type="button" (click)="cancelDeliveryEdit()" class="px-4 py-2 bg-slate-200 rounded-lg font-bold">إلغاء</button>
-                </div>
-            </form>
-        }
-        <div class="space-y-2">
-            @for(c of settings().deliveryCompanies; track c.id) {
-                <div class="bg-white dark:bg-slate-800 p-4 rounded-xl shadow flex justify-between">
-                    <span class="font-bold dark:text-white">{{ c.name }} - {{ c.fee }} د.ج</span>
-                    <div class="flex gap-2">
-                        <button (click)="editCompany(c)" class="text-blue-600"><i class="fa-solid fa-pen"></i></button>
-                        <button (click)="deleteCompany(c.id)" class="text-red-600"><i class="fa-solid fa-trash"></i></button>
-                    </div>
-                </div>
-            }
+    <div class="space-y-6">
+        <h1 class="text-3xl font-black text-slate-800 dark:text-slate-100">شركات التوصيل</h1>
+        <form [formGroup]="deliveryForm" (ngSubmit)="saveDeliveryCompany()" class="bg-slate-50 dark:bg-slate-800 p-6 rounded-2xl shadow-lg flex gap-4 items-end">
+             <div class="flex-1">
+                <label class="font-bold">اسم الشركة</label>
+                <input formControlName="name" class="w-full p-2 border rounded-lg mt-1 dark:bg-slate-700">
+             </div>
+             <div class="flex-1">
+                <label class="font-bold">رسوم التوصيل</label>
+                <input type="number" formControlName="fee" class="w-full p-2 border rounded-lg mt-1 dark:bg-slate-700">
+             </div>
+             <button type="submit" class="px-4 py-2 bg-blue-600 text-white rounded-lg font-bold">حفظ</button>
+             @if(isEditingDelivery()) {
+                <button type="button" (click)="cancelDeliveryEdit()" class="px-4 py-2 bg-slate-200 dark:bg-slate-600 rounded-lg">إلغاء</button>
+             }
+        </form>
+        <div class="bg-slate-50 dark:bg-slate-800 p-6 rounded-2xl shadow-lg">
+           @for(c of settings().deliveryCompanies; track c.id) {
+              <div class="flex justify-between items-center p-2 border-b dark:border-slate-700">
+                 <span>{{c.name}} - {{c.fee}} د.ج</span>
+                 <div class="flex gap-2">
+                    <button (click)="editCompany(c)" class="text-blue-500"><i class="fa-solid fa-pen"></i></button>
+                    <button (click)="deleteCompany(c.id)" class="text-red-500"><i class="fa-solid fa-trash"></i></button>
+                 </div>
+              </div>
+           }
         </div>
     </div>
 </ng-template>
 
 <ng-template #notificationsTemplate>
-    <div>
-        <h1 class="text-3xl font-black mb-6 text-slate-800 dark:text-slate-100">الإشعارات</h1>
-        <form [formGroup]="notificationsForm" (ngSubmit)="saveNotifications()" class="bg-slate-50 dark:bg-slate-800 p-6 rounded-2xl shadow-lg space-y-4">
-            <select formControlName="method" class="w-full p-3 border rounded-lg dark:bg-slate-700 dark:text-white">
-                <option value="none">بدون إشعارات</option>
-                <option value="whatsapp">واتساب</option>
-                <option value="telegram">تيليجرام</option>
-            </select>
-            @if(notificationsForm.get('method')?.value !== 'none') {
-                <div class="flex gap-2">
-                    <input formControlName="destination" placeholder="رقم الهاتف / المعرف" class="flex-1 p-3 border rounded-lg dark:bg-slate-700 dark:text-white">
-                    <button type="button" (click)="sendVerificationCode()" class="bg-blue-600 text-white px-4 rounded-lg">تحقق</button>
-                </div>
-                @if(verificationState() === 'pending') {
+    <div class="space-y-6">
+         <h1 class="text-3xl font-black text-slate-800 dark:text-slate-100">الإشعارات</h1>
+         <form [formGroup]="notificationsForm" (ngSubmit)="saveNotifications()" class="bg-slate-50 dark:bg-slate-800 p-6 rounded-2xl shadow-lg space-y-4">
+            <div>
+               <label class="font-bold">طريقة الإشعار</label>
+               <select formControlName="method" class="w-full p-2 border rounded-lg mt-1 dark:bg-slate-700">
+                  <option value="none">معطل</option>
+                  <option value="whatsapp">واتساب</option>
+                  <option value="email">إيميل</option>
+                  <option value="telegram">تلغرام</option>
+                  <option value="webhook">Webhook</option>
+               </select>
+            </div>
+             <div>
+               <label class="font-bold">الوجهة (رقم، إيميل، رابط)</label>
+               <input formControlName="destination" class="w-full p-2 border rounded-lg mt-1 dark:bg-slate-700">
+            </div>
+            @if(notificationsForm.value.method !== 'none' && !settings().notifications.verified) {
+                <div class="p-4 bg-yellow-100 dark:bg-yellow-900/50 rounded-lg space-y-2">
+                    <p class="font-bold text-yellow-800 dark:text-yellow-200">الربط غير مؤكد!</p>
                     <div class="flex gap-2">
-                        <input formControlName="verificationCode" placeholder="رمز التحقق" class="flex-1 p-3 border rounded-lg">
-                        <button type="button" (click)="confirmVerification()" class="bg-green-600 text-white px-4 rounded-lg">تأكيد</button>
+                       <input formControlName="verificationCode" placeholder="رمز التحقق" class="flex-1 p-2 border rounded-lg dark:bg-slate-700">
+                       <button type="button" (click)="sendVerificationCode()" [disabled]="verificationState() === 'pending'" class="px-3 py-2 bg-yellow-500 text-white rounded-lg font-bold">إرسال الرمز</button>
+                       <button type="button" (click)="confirmVerification()" class="px-3 py-2 bg-green-500 text-white rounded-lg font-bold">تأكيد</button>
                     </div>
-                }
+                </div>
+            } @else if (notificationsForm.value.method !== 'none' && settings().notifications.verified) {
+                <div class="p-3 bg-green-100 dark:bg-green-900/50 text-green-800 dark:text-green-200 rounded-lg font-bold">
+                    <i class="fa-solid fa-check-circle"></i> الربط مؤكد ويعمل.
+                </div>
             }
-            <button type="submit" class="w-full bg-slate-900 text-white py-3 rounded-lg font-bold">حفظ</button>
+            <button type="submit" class="px-6 py-3 bg-blue-600 text-white rounded-lg font-bold">حفظ إعدادات الإشعارات</button>
+         </form>
+    </div>
+</ng-template>
+
+<ng-template #contactTemplate>
+    <div class="space-y-6">
+        <h1 class="text-3xl font-black text-slate-800 dark:text-slate-100">معلومات الاتصال</h1>
+        <form [formGroup]="settingsForm" (ngSubmit)="saveSettings()" class="bg-slate-50 dark:bg-slate-800 p-6 rounded-2xl shadow-lg space-y-4">
+            <div formGroupName="footer">
+                 <div>
+                    <label class="font-bold">نص "من نحن"</label>
+                    <textarea formControlName="aboutText" rows="4" class="w-full p-2 border rounded-lg mt-1 dark:bg-slate-700"></textarea>
+                 </div>
+                 <div>
+                    <label class="font-bold">البريد الإلكتروني للتواصل</label>
+                    <input formControlName="contactEmail" class="w-full p-2 border rounded-lg mt-1 dark:bg-slate-700">
+                 </div>
+                 <div formGroupName="socialLinks" class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                    <div>
+                        <label class="font-bold">فيسبوك</label>
+                        <input formControlName="facebook" placeholder="رابط فيسبوك" class="p-2 border rounded-lg mt-1 dark:bg-slate-700">
+                    </div>
+                    <div>
+                        <label class="font-bold">انستغرام</label>
+                        <input formControlName="instagram" placeholder="رابط انستغرام" class="p-2 border rounded-lg mt-1 dark:bg-slate-700">
+                    </div>
+                    <div>
+                        <label class="font-bold">تويتر (X)</label>
+                        <input formControlName="twitter" placeholder="رابط تويتر" class="p-2 border rounded-lg mt-1 dark:bg-slate-700">
+                    </div>
+                    <div>
+                        <label class="font-bold">تلغرام</label>
+                        <input formControlName="telegram" placeholder="رابط تلغرام" class="p-2 border rounded-lg mt-1 dark:bg-slate-700">
+                    </div>
+                    <div>
+                        <label class="font-bold">تيك توك</label>
+                        <input formControlName="tiktok" placeholder="رابط تيك توك" class="p-2 border rounded-lg mt-1 dark:bg-slate-700">
+                    </div>
+                    <div>
+                        <label class="font-bold">يوتيوب</label>
+                        <input formControlName="youtube" placeholder="رابط يوتيوب" class="p-2 border rounded-lg mt-1 dark:bg-slate-700">
+                    </div>
+                 </div>
+                 <div formArrayName="quickLinks">
+                     <h4 class="font-bold mt-4">روابط سريعة</h4>
+                     @for(link of quickLinks.controls; track link; let i = $index) {
+                        <div [formGroupName]="i" class="flex gap-2 items-center mt-2">
+                           <input formControlName="label" placeholder="العنوان" class="flex-1 p-2 border rounded-lg dark:bg-slate-700">
+                           <input formControlName="url" placeholder="الرابط" class="flex-1 p-2 border rounded-lg dark:bg-slate-700">
+                           <button type="button" (click)="removeQuickLink(i)" class="text-red-500">حذف</button>
+                        </div>
+                     }
+                     <button type="button" (click)="addQuickLink()" class="mt-2 text-blue-500 font-bold">+ إضافة رابط</button>
+                 </div>
+            </div>
+            <button type="submit" class="px-6 py-3 bg-blue-600 text-white rounded-lg font-bold">حفظ</button>
         </form>
     </div>
 </ng-template>
 
-<ng-template #marketingTemplate>
-    <div>
-        <div class="flex justify-between mb-6">
-            <h1 class="text-3xl font-black text-slate-800 dark:text-slate-100">المسوق الذكي</h1>
-            <button (click)="isEditingBot.set(true)" class="px-4 py-2 bg-blue-600 text-white rounded-lg font-bold">إضافة مسوق</button>
+<ng-template #sectionsTemplate>
+    <div class="space-y-6">
+        <h1 class="text-3xl font-black text-slate-800 dark:text-slate-100">أقسام المتجر</h1>
+        <form [formGroup]="sectionForm" (ngSubmit)="saveSection()" class="bg-slate-50 dark:bg-slate-800 p-6 rounded-2xl shadow-lg grid grid-cols-1 md:grid-cols-4 gap-4 items-end">
+             <div class="flex-1 col-span-1 md:col-span-2">
+                <label class="font-bold">اسم القسم</label>
+                <input formControlName="name" class="w-full p-2 border rounded-lg mt-1 dark:bg-slate-700">
+             </div>
+             <div>
+                <label class="font-bold">عدد المنتجات</label>
+                <input type="number" formControlName="productCount" min="1" max="10" class="w-full p-2 border rounded-lg mt-1 dark:bg-slate-700">
+             </div>
+             <div>
+                <label class="font-bold">عدد الأعمدة</label>
+                <input type="number" formControlName="columns" min="1" max="6" class="w-full p-2 border rounded-lg mt-1 dark:bg-slate-700">
+             </div>
+             <div>
+                <label class="block text-sm font-bold mb-1 text-slate-600 dark:text-slate-400">شكل بطاقة القسم</label>
+                <select formControlName="cardShape" class="w-full p-3 border rounded-lg bg-white dark:bg-slate-700 dark:border-slate-600 text-slate-800 dark:text-white">
+                    <option value="default">افتراضي (زوايا مستديرة)</option>
+                    <option value="square">مربع</option>
+                    <option value="circle">دائري</option>
+                    <option value="rhombus">معين</option>
+                    <option value="floating">عائمة (شفافة)</option>
+                </select>
+             </div>
+              <div>
+                <label class="block text-sm font-bold mb-1 text-slate-600 dark:text-slate-400">حركة بطاقة القسم</label>
+                <select formControlName="cardAnimation" class="w-full p-3 border rounded-lg bg-white dark:bg-slate-700 dark:border-slate-600 text-slate-800 dark:text-white">
+                    <option value="none">بدون</option>
+                    <option value="magnetic-tilt">إمالة مغناطيسية</option>
+                    <option value="floating-elements">عناصر عائمة</option>
+                    <option value="directional-glare">وهج اتجاهي</option>
+                    <option value="spotlight-focus">تركيز ضوئي</option>
+                    <option value="liquid-distortion">تشوه سائل</option>
+                    <option value="glitch-effect">تأثير الخلل</option>
+                    <option value="staggered-pop">ظهور متدرج</option>
+                    <option value="random-mix">مزج عشوائي</option>
+                </select>
+            </div>
+             <div class="col-span-1 md:col-span-4 flex gap-2">
+                <button type="submit" class="px-6 py-3 bg-blue-600 text-white rounded-lg font-bold flex-1">حفظ القسم</button>
+                @if(isEditingSection()) {
+                   <button type="button" (click)="cancelSectionEdit()" class="px-6 py-3 bg-slate-200 dark:bg-slate-600 rounded-lg flex-1">إلغاء</button>
+                }
+             </div>
+        </form>
+        <div class="bg-slate-50 dark:bg-slate-800 p-6 rounded-2xl shadow-lg">
+           @for(s of settings().storeSections; track s.id) {
+              <div class="flex justify-between items-center p-2 border-b dark:border-slate-700">
+                 <span>{{s.name}} ({{s.productCount}} منتجات / {{s.columns}} أعمدة) - الشكل: {{ s.cardShape }} - الحركة: {{ s.cardAnimation }}</span>
+                 <div class="flex gap-2">
+                    <button (click)="editSection(s)" class="text-blue-500"><i class="fa-solid fa-pen"></i></button>
+                    <button (click)="deleteSection(s.id)" class="text-red-500"><i class="fa-solid fa-trash"></i></button>
+                 </div>
+              </div>
+           }
         </div>
-        @if(isEditingBot()) {
-            <form [formGroup]="marketingBotForm" (ngSubmit)="saveBot()" class="bg-slate-50 dark:bg-slate-800 p-6 rounded-2xl shadow-lg mb-6 space-y-4">
-                <input formControlName="name" placeholder="اسم الحملة" class="w-full p-3 border rounded-lg dark:bg-slate-700 dark:text-white">
-                <div class="flex gap-4">
-                    <input type="number" formControlName="discountPercentage" placeholder="الخصم %" class="flex-1 p-3 border rounded-lg dark:bg-slate-700 dark:text-white">
-                    <input type="number" formControlName="durationHours" placeholder="المدة (ساعات)" class="flex-1 p-3 border rounded-lg dark:bg-slate-700 dark:text-white">
-                </div>
-                <button type="button" (click)="openProductSelector(marketingBotForm)" class="w-full p-3 border border-dashed rounded-lg dark:text-white">اختيار المنتجات</button>
-                <div class="flex gap-2">
-                    <button type="submit" class="bg-green-600 text-white px-4 py-2 rounded-lg font-bold">حفظ</button>
-                    <button type="button" (click)="cancelBotEdit()" class="bg-slate-200 px-4 py-2 rounded-lg font-bold">إلغاء</button>
-                </div>
-            </form>
-        }
-        <div class="space-y-4">
-            @for(bot of settings().marketingBots; track bot.id) {
-                <div class="bg-white dark:bg-slate-800 p-4 rounded-xl shadow flex justify-between items-center">
-                    <div>
-                        <h3 class="font-bold dark:text-white">{{ bot.name }}</h3>
-                        <p class="text-sm text-slate-500">خصم {{ bot.discountPercentage }}%</p>
-                    </div>
-                    <div class="flex items-center gap-4">
-                        <label class="relative inline-flex items-center cursor-pointer">
-                            <input type="checkbox" [checked]="bot.enabled" (change)="toggleBot(bot)" class="sr-only peer">
-                            <div class="w-11 h-6 bg-gray-200 peer-focus:outline-none rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:bg-green-600"></div>
-                        </label>
-                        <button (click)="editBot(bot)" class="text-blue-600"><i class="fa-solid fa-pen"></i></button>
-                        <button (click)="deleteBot(bot.id)" class="text-red-600"><i class="fa-solid fa-trash"></i></button>
-                    </div>
-                </div>
-            }
+    </div>
+</ng-template>
+
+<ng-template #marketingTemplate>
+    <div class="space-y-6">
+        <h1 class="text-3xl font-black text-slate-800 dark:text-slate-100">المسوق الذكي</h1>
+        <form [formGroup]="marketingBotForm" (ngSubmit)="saveBot()" class="bg-slate-50 dark:bg-slate-800 p-6 rounded-2xl shadow-lg grid grid-cols-1 md:grid-cols-3 gap-4 items-end">
+            <input formControlName="name" placeholder="اسم العرض" class="p-2 border rounded dark:bg-slate-700">
+            <input type="number" formControlName="discountPercentage" placeholder="نسبة الخصم %" class="p-2 border rounded dark:bg-slate-700">
+            <input type="number" formControlName="durationHours" placeholder="مدة العرض (ساعات)" class="p-2 border rounded dark:bg-slate-700">
+            <button type="button" (click)="openProductSelector(marketingBotForm)" class="p-2 border rounded bg-slate-200 dark:bg-slate-600">اختيار المنتجات ({{ marketingBotForm.value.productIds?.length || 0 }})</button>
+            <button type="submit" class="col-span-1 md:col-span-3 px-4 py-2 bg-blue-600 text-white rounded-lg font-bold">حفظ</button>
+        </form>
+         <div class="bg-slate-50 dark:bg-slate-800 p-6 rounded-2xl shadow-lg">
+           @for(b of settings().marketingBots; track b.id) {
+              <div class="flex justify-between items-center p-2 border-b dark:border-slate-700">
+                 <div class="flex items-center gap-4">
+                     <label class="relative inline-flex items-center cursor-pointer">
+                       <input type="checkbox" [checked]="b.enabled" (change)="toggleBot(b)" class="sr-only peer">
+                       <div class="w-11 h-6 bg-gray-200 peer-focus:outline-none peer-focus:ring-4 peer-focus:ring-blue-300 dark:peer-focus:ring-blue-800 rounded-full peer dark:bg-gray-700 peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all dark:border-gray-600 peer-checked:bg-blue-600"></div>
+                     </label>
+                     <span>{{b.name}}</span>
+                 </div>
+                 <div class="flex gap-2">
+                    <button (click)="editBot(b)" class="text-blue-500"><i class="fa-solid fa-pen"></i></button>
+                    <button (click)="deleteBot(b.id)" class="text-red-500"><i class="fa-solid fa-trash"></i></button>
+                 </div>
+              </div>
+           }
         </div>
     </div>
 </ng-template>
