@@ -1,0 +1,22 @@
+
+<div 
+  class="absolute inset-0 z-0 transition-opacity duration-500" 
+  [style.background-color]="settings().bgOverlayColor" 
+  [style.opacity]="settings().bgOverlayOpacity">
+</div>
+
+<div class="relative z-10">
+  <router-outlet></router-outlet>
+</div>
+
+@if (toastState().visible) {
+  <div class="fixed top-5 left-5 z-[200] animate-slide-in-down notification-container" [class]="'notification-style-' + settings().notificationShape">
+    <div class="notification-content">
+      <img [src]="settings().logo" alt="Store Logo" class="notification-logo">
+      <div>
+        <p class="notification-title">{{ toastState().message }}</p>
+        <p class="notification-subtitle">تم تحديث بيانات متجرك بنجاح.</p>
+      </div>
+    </div>
+  </div>
+}

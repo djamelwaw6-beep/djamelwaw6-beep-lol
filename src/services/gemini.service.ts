@@ -1,7 +1,6 @@
 
-
 import { Injectable, signal } from '@angular/core';
-import { GoogleGenAI } from '@google/genai'; // Removed 'Type' as it's no longer needed after removing schema examples
+import { GoogleGenAI, Type } from '@google/genai';
 
 @Injectable({ providedIn: 'root' })
 export class GeminiService {
@@ -12,7 +11,7 @@ export class GeminiService {
 
   constructor() {
     try {
-      this.apiKey = process.env.API_KEY; // Using process.env.API_KEY as per guidelines
+      this.apiKey = (process as any).env.API_KEY;
       if (!this.apiKey) {
         const errorMessage = 'Gemini API key is not configured. AI features will be disabled.';
         this.configurationError.set(errorMessage);
@@ -41,7 +40,7 @@ export class GeminiService {
     return text.replace(/```json\n?|\n?```/g, '').trim();
   }
 
-  // 1. Generate Product Details (Kept)
+  // 1. Generate Product Details
   async generateProductDetailsFromImage(base64Image: string, price: number, existingCategories: string[]): Promise<{ name: string; description: string; category: string; }> {
     const fallbackDetails = { name: 'منتج جديد', description: 'وصف المنتج...', category: 'عام' };
     if (!this.isConfigured() || !this.ai) return fallbackDetails;
@@ -62,7 +61,7 @@ export class GeminiService {
     }
   }
 
-  // 2. Generate Ad Copy (Kept)
+  // 2. Generate Ad Copy
   async generateAdCopy(productName: string, productDescription: string): Promise<any> {
     if (!this.isConfigured() || !this.ai) return null;
     try {
@@ -72,14 +71,10 @@ export class GeminiService {
         config: { responseMimeType: 'application/json' }
       });
       return JSON.parse(this.cleanJson(response.text));
-    } catch (error) { // Added error logging for ad generation
-      this.handleGeminiError(error);
-      return null; 
-    }
+    } catch { return null; }
   }
 
-  // 3. Generate Image (Imagen 4) - Helper, still useful for ad features if needed, but not directly exposed as AI Assistant feature.
-  // Kept as it might be used internally for feature images in ad, though current implementation sets image to null for now.
+  // 3. Generate Image (Imagen 4)
   async generateMarketingImage(prompt: string): Promise<string | undefined> {
     if (!this.isConfigured() || !this.ai) return undefined;
     try {
@@ -92,7 +87,104 @@ export class GeminiService {
     } catch (e) { this.handleGeminiError(e); return undefined; }
   }
 
-  // Removed: 4. Video Generation (Veo 3.1)
-  // Removed: 5. Google Search Grounding (Gemini 3)
-  // Removed: 6. Image Editing (Nano Banana Style)
+  // 4. Video Generation (Veo 3.1) - Supports Image Input
+  async generateMarketingVideo(prompt: string, imageBase64?: string): Promise<string> {
+    if (!this.isConfigured() || !this.ai) throw new Error('Gemini not configured');
+    
+    try {
+      let operation;
+      const model = 'veo-3.1-fast-generate-preview';
+      
+      if (imageBase64) {
+        // Image-to-Video
+        operation = await this.ai.models.generateVideos({
+          model: model,
+          prompt: prompt,
+          image: {
+             imageBytes: imageBase64,
+             mimeType: 'image/jpeg' 
+          },
+          config: { numberOfVideos: 1 } // Aspect ratio defaults usually handled by model or ignored if image present
+        });
+      } else {
+        // Text-to-Video
+        operation = await this.ai.models.generateVideos({
+          model: model,
+          prompt: prompt,
+          config: { numberOfVideos: 1 }
+        });
+      }
+
+      let attempts = 0;
+      while (!operation.done && attempts < 30) { // Poll for up to 2.5 mins
+        await new Promise(resolve => setTimeout(resolve, 5000));
+        operation = await this.ai.operations.getVideosOperation({ operation: operation });
+        attempts++;
+      }
+      
+      if (!operation.done) throw new Error("Video generation timed out.");
+      const videoUri = operation.response?.generatedVideos?.[0]?.video?.uri;
+      if (!videoUri) throw new Error('No video URI.');
+      
+      const videoRes = await fetch(`${videoUri}&key=${this.apiKey}`);
+      const blob = await videoRes.blob();
+      return URL.createObjectURL(blob);
+
+    } catch (error: any) {
+      this.handleGeminiError(error);
+      throw new Error('فشل توليد الفيديو.');
+    }
+  }
+
+  // 5. Google Search Grounding (Gemini 3)
+  async researchMarketTrends(query: string): Promise<{ text: string; sources: any[] }> {
+      if (!this.isConfigured() || !this.ai) return { text: 'الخدمة غير متوفرة', sources: [] };
+      try {
+          const response = await this.ai.models.generateContent({
+              model: 'gemini-3-flash-preview',
+              contents: `Answer this query in Arabic with recent data: ${query}`,
+              config: {
+                  tools: [{ googleSearch: {} }]
+              }
+          });
+          
+          const chunks = response.candidates?.[0]?.groundingMetadata?.groundingChunks || [];
+          const sources = chunks.map((c: any) => c.web).filter((w: any) => w);
+          
+          return {
+              text: response.text || 'لا توجد نتائج.',
+              sources: sources
+          };
+      } catch (error) {
+          this.handleGeminiError(error);
+          return { text: 'حدث خطأ أثناء البحث.', sources: [] };
+      }
+  }
+
+  // 6. Image Editing (Nano Banana Style)
+  // Since we don't have a direct "edit" endpoint exposed in this SDK version for Gemini 2.5 Flash Image editing directly on pixels,
+  // We simulate it by using Gemini 2.5 Flash to understand the edit and Imagen 4 to generate the result.
+  async editProductImage(base64Image: string, editPrompt: string): Promise<string | undefined> {
+      if (!this.isConfigured() || !this.ai) return undefined;
+      try {
+          // Step 1: Describe the new image
+          const descriptionResponse = await this.ai.models.generateContent({
+              model: 'gemini-2.5-flash',
+              contents: {
+                  parts: [
+                      { inlineData: { mimeType: 'image/jpeg', data: base64Image } },
+                      { text: `Describe a new version of this image with the following change applied: "${editPrompt}". Give a detailed photorealistic prompt for an image generator.` }
+                  ]
+              }
+          });
+          
+          const newPrompt = descriptionResponse.text;
+          
+          // Step 2: Generate the image
+          return await this.generateMarketingImage(newPrompt);
+      } catch (error) {
+          this.handleGeminiError(error);
+          return undefined;
+      }
+  }
 }
